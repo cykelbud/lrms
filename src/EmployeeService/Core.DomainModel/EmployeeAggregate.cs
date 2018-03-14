@@ -1,5 +1,4 @@
-﻿using EmployeeService.Commands;
-using EventFlow.Aggregates;
+﻿using EventFlow.Aggregates;
 
 namespace EmployeeService.Core.DomainModel
 {

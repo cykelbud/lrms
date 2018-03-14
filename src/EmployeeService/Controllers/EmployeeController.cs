@@ -33,6 +33,7 @@ namespace EmployeeService.Controllers
         [HttpPost]
         public void Post([FromBody]CreateEmployeeRequest request)
         {
+            _employeeService.CreateEmployee(request);
 
         }
 

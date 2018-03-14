@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace InvoiceService.Controllers
 {
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class InvoiceController : Controller
     {
         // GET api/values
         [HttpGet]

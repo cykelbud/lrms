@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using EmployeeService.Commands;
 using EmployeeService.Core.DomainModel;
 using EmployeeService.Requests;
 using EventFlow;

@@ -1,8 +1,7 @@
-﻿using EmployeeService.Core.DomainModel;
-using EventFlow.Commands;
+﻿using EventFlow.Commands;
 using EventFlow.Core;
 
-namespace EmployeeService.Commands
+namespace EmployeeService.Core.DomainModel
 {
     internal class CreateEmployeeCommand : Command<EmployeeAggregate, EmployeeId>
     {

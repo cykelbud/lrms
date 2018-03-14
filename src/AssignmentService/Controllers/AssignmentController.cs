@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AssignmentService.Controllers
 {
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class AssignmentController : Controller
     {
         // GET api/values
         [HttpGet]
