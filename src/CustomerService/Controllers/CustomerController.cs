@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using CustomerService.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CustomerService.Controllers
 {
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class CustomerController : Controller
     {
         // GET api/values
-        [HttpGet]
+        [HttpGet("")]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
@@ -25,7 +23,7 @@ namespace CustomerService.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody]CreateCustomerRequest request)
         {
         }
 

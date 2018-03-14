@@ -1,14 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using EmployeeService.Core.ApplicationServices;
+using EmployeeService.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeService.Controllers
 {
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class EmployeeController : Controller
     {
+        private readonly IEmployeeService _employeeService;
+
+        public EmployeeController(IEmployeeService employeeService)
+        {
+            _employeeService = employeeService;
+        }
+
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
@@ -25,8 +31,9 @@ namespace EmployeeService.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody]CreateEmployeeRequest request)
         {
+
         }
 
         // PUT api/values/5
