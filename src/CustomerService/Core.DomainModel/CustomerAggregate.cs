@@ -3,7 +3,7 @@ using EventFlow.Aggregates;
 
 namespace CustomerService.Core.DomainModel
 {
-    internal class CustomerAggregate : AggregateRoot<CustomerAggregate, CustomerId>,
+    public class CustomerAggregate : AggregateRoot<CustomerAggregate, CustomerId>,
         IApply<CustomerCreatedEvent>
     {
         // state

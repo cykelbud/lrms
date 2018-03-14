@@ -4,7 +4,7 @@ using EventFlow.Core;
 
 namespace CustomerService.Commands
 {
-    internal class CreateCustomerCommand : Command<CustomerAggregate, CustomerId>
+    public class CreateCustomerCommand : Command<CustomerAggregate, CustomerId>
     {
         public string UserName { get;  }
         public string PersonalIdentificationNumber { get;  }

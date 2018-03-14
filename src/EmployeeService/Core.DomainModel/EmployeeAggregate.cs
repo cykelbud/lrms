@@ -2,7 +2,7 @@
 
 namespace EmployeeService.Core.DomainModel
 {
-    internal class EmployeeAggregate : AggregateRoot<EmployeeAggregate, EmployeeId>,
+    public class EmployeeAggregate : AggregateRoot<EmployeeAggregate, EmployeeId>,
         IApply<EmployeeCreatedEvent>
     {
         // state

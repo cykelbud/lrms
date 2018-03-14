@@ -3,7 +3,7 @@ using EventFlow.Core;
 
 namespace EmployeeService.Core.DomainModel
 {
-    internal class CreateEmployeeCommand : Command<EmployeeAggregate, EmployeeId>
+    public class CreateEmployeeCommand : Command<EmployeeAggregate, EmployeeId>
     {
         public string UserName { get;  }
         public string PersonalIdentificationNumber { get;  }
