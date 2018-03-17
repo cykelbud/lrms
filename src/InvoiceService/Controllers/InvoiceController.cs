@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using InvoiceService.Core.ApplicationServices;
+using InvoiceService.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceService.Controllers
@@ -9,36 +9,26 @@ namespace InvoiceService.Controllers
     [Route("api/[controller]")]
     public class InvoiceController : Controller
     {
-        // GET api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IInvoiceService _invoiceService;
+
+        public InvoiceController(IInvoiceService invoiceService)
         {
-            return new string[] { "value1", "value2" };
+            _invoiceService = invoiceService;
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpPost("")]
+        public async Task CreateInvoice([FromBody] CreateInvoiceRequest request)
         {
-            return "value";
+            await _invoiceService.CreateInvoice(request);
         }
 
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]string value)
+        [HttpPost("send/{invoiceId}")]
+        public async Task SendInvoice([FromBody] Guid invoiceId)
         {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            await _invoiceService.SendInvoice(new SendInvoiceRequest()
+            {
+                InvoiceId = invoiceId
+            });
         }
     }
 }
