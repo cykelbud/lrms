@@ -1,4 +1,6 @@
-﻿using EventFlow.Commands;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using EventFlow.Commands;
 using EventFlow.Core;
 
 namespace EmployeeService.Core.DomainModel
@@ -18,6 +20,15 @@ namespace EmployeeService.Core.DomainModel
         {
             UserName = userName;
             PersonalIdentificationNumber = personalIdentificationNumber;
+        }
+    }
+
+    public class CreateEmployeeCommandHandler : EventFlow.Commands.CommandHandler<EmployeeAggregate, EmployeeId, AddBankInfoCommand>
+    {
+        public override Task ExecuteAsync(EmployeeAggregate aggregate, AddBankInfoCommand command, CancellationToken cancellationToken)
+        {
+            aggregate.AddBankInfo(command);
+            return Task.FromResult(0);
         }
     }
 }

@@ -25,5 +25,11 @@ namespace EmployeeService.Core.ApplicationServices
             return aggregateId.GetGuid();
         }
 
+        public Task AddBankInfo(AddEmployeeBankInfoRequest request)
+        {
+            var employeeId = EmployeeId.With(request.EmployeeId);
+           
+            throw new NotImplementedException();
+        }
     }
 }

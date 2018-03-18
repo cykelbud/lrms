@@ -7,5 +7,6 @@ namespace EmployeeService.Core.ApplicationServices
     public interface IEmployeeService
     {
         Task<Guid> CreateEmployee(CreateEmployeeRequest request);
+        Task AddBankInfo(AddEmployeeBankInfoRequest request);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using EventFlow.Aggregates;
 
-namespace EmployeeService.Core.DomainModel
+namespace PaymentService.Core.DomainModel
 {
     public class EmployeeAggregate : AggregateRoot<EmployeeAggregate, EmployeeId>,
         IApply<EmployeeCreatedEvent>,

@@ -6,11 +6,21 @@ Invoice:
 Invoice skapas
 Invoice skickas, email/papper
 
-Payment:
-Betalning mottagen
+Payment: Betalning mottagen
 
-Payout:
-Lön betalas ut till employee
+Payout: Lön betalas ut till employee
+
+--------------
+
+Förskottsbetalning:
+Invoice skapas
+Invoice skickas
+
+Payout till employee
+
+Payment: ta emot betalning av kunden
+Payment: eventuell påminnelse
+
 
 --------------
 
@@ -26,16 +36,6 @@ Payment: eventuell påminnelse
 Payout till employee
 
 
---------------
-
-Förskottsbetalning:
-Invoice skapas
-Invoice skickas
-
-Payout till employee
-
-Payment: ta emot betalning av kunden
-Payment: eventuell påminnelse
 
 ------------------
 
