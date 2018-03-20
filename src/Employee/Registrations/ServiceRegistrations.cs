@@ -5,7 +5,7 @@ namespace Employee.Registrations
 {
     public static class ServiceRegistrations
     {
-        public static IServiceCollection AddEmplyeeRegistrations(IServiceCollection services)
+        public static IServiceCollection AddEmplyeeRegistrations(this IServiceCollection services)
         {
             services.AddSingleton<IEmployeeService, EmployeeService>();
 

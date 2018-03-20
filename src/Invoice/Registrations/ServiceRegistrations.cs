@@ -5,9 +5,9 @@ namespace Invoice.Registrations
 {
     public static class ServiceRegistrations
     {
-        public static IServiceCollection AddInvoiceRegistrations(IServiceCollection services)
+        public static IServiceCollection AddInvoiceRegistrations(this IServiceCollection services)
         {
-            services.AddSingleton<IInvoiceService, Core.ApplicationServices.InvoiceService>();
+            services.AddSingleton<IInvoiceService, InvoiceService>();
 
             return services;
         }

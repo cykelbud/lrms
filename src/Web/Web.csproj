@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.6.2" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.1" />
+    <PackageReference Include="EventFlow.Autofac" Version="0.54.3261" />
+    <PackageReference Include="EventFlow.MsSql" Version="0.54.3261" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.4" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0-preview1-final" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Assignment\Assignment.csproj" />
+    <ProjectReference Include="..\Customer\Customer.csproj" />
+    <ProjectReference Include="..\Employee\Employee.csproj" />
+    <ProjectReference Include="..\Invoice\Invoice.csproj" />
+    <ProjectReference Include="..\Payment\Payment.csproj" />
+    <ProjectReference Include="..\Payout\Payout.csproj" />
+  </ItemGroup>
+
+</Project>

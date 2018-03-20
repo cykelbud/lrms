@@ -5,7 +5,7 @@ namespace Customer.Registrations
 {
     public static class ServiceRegistrations
     {
-        public static IServiceCollection AddCustomerRegistrations(IServiceCollection services)
+        public static IServiceCollection AddCustomerRegistrations(this IServiceCollection services)
         {
             services.AddSingleton<ICustomerService, CustomerService>();
 

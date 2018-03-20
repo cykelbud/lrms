@@ -5,7 +5,7 @@ namespace Payment.Registrations
 {
     public static class ServiceRegistrations
     {
-        public static IServiceCollection AddInvoiceRegistrations(IServiceCollection services)
+        public static IServiceCollection AddPaymentRegistrations(this IServiceCollection services)
         {
             services.AddSingleton<IPaymentService, PaymentService>();
 
