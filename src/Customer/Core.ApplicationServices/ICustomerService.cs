@@ -8,6 +8,7 @@ namespace Customer.Core.ApplicationServices
     public interface ICustomerService
     {
         Task<Guid> CreateCustomer(CreateCustomerRequest request);
-        Task<IEnumerable<CustomerDto>> GetCustomers();
+        Task<CustomerDto[]> GetCustomers();
+        Task<CustomerDto> GetCustomer(Guid customerId);
     }
 }

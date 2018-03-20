@@ -8,5 +8,7 @@ namespace Employee.Core.ApplicationServices
     {
         Task<Guid> CreateEmployee(CreateEmployeeRequest request);
         Task AddBankInfo(AddEmployeeBankInfoRequest request);
+        Task<EmployeeDto[]> GetAll();
+        Task<EmployeeDto> GetEmployee(Guid employeeId);
     }
 }

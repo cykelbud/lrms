@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Customer.Commands;
@@ -31,10 +30,16 @@ namespace Customer.Core.ApplicationServices
             return customerId.GetGuid();
         }
 
-        public async Task<IEnumerable<CustomerDto>> GetCustomers()
+        public async Task<CustomerDto[]> GetCustomers()
         {
             var customers = await _queryProcessor.ProcessAsync(new GetAllCustomersQuery(), CancellationToken.None).ConfigureAwait(false);
             return customers;
+        }
+
+        public async Task<CustomerDto> GetCustomer(Guid customerId)
+        {
+            var customer = await _queryProcessor.ProcessAsync(new GetCustomerQuery(customerId), CancellationToken.None).ConfigureAwait(false);
+            return customer;
         }
     }
 }

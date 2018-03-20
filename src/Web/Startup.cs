@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,7 @@ using EventFlow;
 using EventFlow.Autofac.Extensions;
 using EventFlow.Extensions;
 using EventFlow.MsSql;
+using EventFlow.MsSql.EventStores;
 using EventFlow.MsSql.Extensions;
 using Invoice.Registrations;
 using Payment.Registrations;
@@ -27,12 +29,21 @@ namespace Web
 {
     public class Startup
     {
+
+        public static Assembly AssignmentsAssembly { get; } = typeof(Assignment.Registrations.ServiceRegistrations).Assembly;
+        public static Assembly CustomerAssembly { get; } = typeof(Customer.Registrations.ServiceRegistrations).Assembly;
+        public static Assembly EmployeeAssembly { get; } = typeof(Employee.Registrations.ServiceRegistrations).Assembly;
+        public static Assembly InvoiceAssembly { get; } = typeof(Invoice.Registrations.ServiceRegistrations).Assembly;
+        public static Assembly PaymentAssembly { get; } = typeof(Payment.Registrations.ServiceRegistrations).Assembly;
+        public static Assembly PayoutAssembly { get; } = typeof(Payout.Registrations.ServiceRegistrations).Assembly;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
+        public IContainer ApplicationContainer { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -50,47 +61,57 @@ namespace Web
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
 
-
-
             var builder = new ContainerBuilder();
             builder.Populate(services);
 
             // EventFlow
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
-            //var container = EventFlowOptions.New
-            //    .UseAutofacContainerBuilder(builder) // Must be the first line!
-            //    .AddDefaults(DomainModelAssembly)
-            //    .AddDefaults(DomainServicesAssembly)
-            //    .AddDefaults(ReadModelAssembly)
-            //    .AddDefaults(ProjectionsAssembly)
-            //    .AddDefaults(QueryHandlerAssembly)
-            //    .ConfigureMsSql(MsSqlConfiguration.New.SetConnectionString(connectionString))
-            //    .UseMssqlEventStore()
-            //    .AddQueryHandlers(typeof(GetAllLoanApplicationsQueryHandler))
-            //    .UseMssqlReadModel<LoanApplicationReadModel>()
-            //    .CreateContainer();
+            var container = EventFlowOptions.New
+                .UseAutofacContainerBuilder(builder) // Must be the first line!
+                .AddDefaults(AssignmentsAssembly)
+                .AddDefaults(CustomerAssembly)
+                .AddDefaults(EmployeeAssembly)
+                .AddDefaults(InvoiceAssembly)
+                .AddDefaults(PaymentAssembly)
+                .AddDefaults(PayoutAssembly)
+                .ConfigureMsSql(MsSqlConfiguration.New.SetConnectionString(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=LrmsDb;Integrated Security=True;"))
+                .UseMssqlEventStore()
 
-            //this.ApplicationContainer = container;
-            //return new AutofacServiceProvider(this.ApplicationContainer);
-            return null;
+                //.AddQueryHandlers(typeof(GetAllLoanApplicationsQueryHandler))
+                //.UseMssqlReadModel<LoanApplicationReadModel>()
 
+                .CreateContainer();
+
+            this.ApplicationContainer = container;
+            return new AutofacServiceProvider(this.ApplicationContainer);
         }
 
-        public IContainer ApplicationContainer { get; set; }
+
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IHostingEnvironment env,
+            IApplicationLifetime appLifetime)
         {
-            app.UseSwagger();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+            app.UseStaticFiles();
+
+            var migrator = ApplicationContainer.Resolve<IMsSqlDatabaseMigrator>();
+            EventFlowEventStoresMsSql.MigrateDatabase(migrator);
+
+            app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 
             app.UseMvc();
+
+            appLifetime.ApplicationStopped.Register(() => this.ApplicationContainer.Dispose());
+
         }
     }
 }
