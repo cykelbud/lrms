@@ -13,6 +13,7 @@ using Assignment.Registrations;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Customer.Registrations;
+using Employee.Projections;
 using Employee.Registrations;
 using EventFlow;
 using EventFlow.Autofac.Extensions;
@@ -30,6 +31,7 @@ namespace Web
     public class Startup
     {
 
+        public static Assembly WebAssembly { get; } = typeof(Startup).Assembly;
         public static Assembly AssignmentsAssembly { get; } = typeof(Assignment.Registrations.ServiceRegistrations).Assembly;
         public static Assembly CustomerAssembly { get; } = typeof(Customer.Registrations.ServiceRegistrations).Assembly;
         public static Assembly EmployeeAssembly { get; } = typeof(Employee.Registrations.ServiceRegistrations).Assembly;
@@ -65,10 +67,10 @@ namespace Web
             builder.Populate(services);
 
             // EventFlow
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
 
             var container = EventFlowOptions.New
                 .UseAutofacContainerBuilder(builder) // Must be the first line!
+                .AddDefaults(WebAssembly)
                 .AddDefaults(AssignmentsAssembly)
                 .AddDefaults(CustomerAssembly)
                 .AddDefaults(EmployeeAssembly)
@@ -79,7 +81,7 @@ namespace Web
                 .UseMssqlEventStore()
 
                 //.AddQueryHandlers(typeof(GetAllLoanApplicationsQueryHandler))
-                //.UseMssqlReadModel<LoanApplicationReadModel>()
+                .UseMssqlReadModel<EmployeeReadModel>()
 
                 .CreateContainer();
 

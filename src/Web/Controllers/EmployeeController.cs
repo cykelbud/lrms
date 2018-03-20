@@ -29,9 +29,9 @@ namespace Web.Controllers
         }
 
         [HttpPost("")]
-        public async Task CreateEmployee([FromBody] CreateEmployeeRequest request)
+        public async Task<Guid> CreateEmployee([FromBody] CreateEmployeeRequest request)
         {
-            await _employeeService.CreateEmployee(request);
+            return await _employeeService.CreateEmployee(request);
         }
     }
 }

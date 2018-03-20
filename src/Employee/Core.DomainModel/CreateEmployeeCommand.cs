@@ -23,11 +23,11 @@ namespace Employee.Core.DomainModel
         }
     }
 
-    public class CreateEmployeeCommandHandler : EventFlow.Commands.CommandHandler<EmployeeAggregate, EmployeeId, AddBankInfoCommand>
+    public class CreateEmployeeCommandandler : CommandHandler<EmployeeAggregate, EmployeeId, CreateEmployeeCommand>
     {
-        public override Task ExecuteAsync(EmployeeAggregate aggregate, AddBankInfoCommand command, CancellationToken cancellationToken)
+        public override Task ExecuteAsync(EmployeeAggregate aggregate, CreateEmployeeCommand command, CancellationToken cancellationToken)
         {
-            aggregate.AddBankInfo(command);
+            aggregate.CreateCustomer(command);
             return Task.FromResult(0);
         }
     }
