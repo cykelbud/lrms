@@ -35,8 +35,11 @@ namespace Assignment.Infrastructure.Subscribers
                 Guid employeeId = invoiceCreated.EmployeeId;
                 _assignmentService.CreateAssignment(new CreateAssignmentCommand(AssignmentId.New, employeeId));
             }
+            if (domainEvent.EventType.FullName == "Invoice.Core.DomainModel.InvoiceSentEvent")
+            {
+                // skicka till payment??
 
-
+            }
             return Task.CompletedTask;
         }
     }
