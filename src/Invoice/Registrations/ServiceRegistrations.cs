@@ -8,6 +8,7 @@ namespace Invoice.Registrations
         public static IServiceCollection AddInvoiceRegistrations(this IServiceCollection services)
         {
             services.AddSingleton<IInvoiceService, InvoiceService>();
+            services.AddSingleton<IInvoicePrinter, InvoicePrinter>();
 
             return services;
         }

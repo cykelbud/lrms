@@ -18,5 +18,24 @@ namespace Invoice.Core.DomainServices
         }
     }
 
+    public class GetInvoiceCustomerQuery : IQuery<InvoiceCustomerDto>
+    {
+        public Guid Id { get; }
+
+        public GetInvoiceCustomerQuery(Guid id)
+        {
+            Id = id;
+        }
+    }
+    public class GetInvoiceEmployeeQuery : IQuery<InvoiceEmployeeDto>
+    {
+        public Guid Id { get; }
+
+        public GetInvoiceEmployeeQuery(Guid id)
+        {
+            Id = id;
+        }
+    }
+
 
 }
