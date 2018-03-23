@@ -28,5 +28,10 @@ namespace Assignment.Core.ApplicationServices
             var a = await _queryProcessor.ProcessAsync(new GetAllAssignmentsQuery(), CancellationToken.None);
             return a;
         }
+
+        public async Task SetWaitingForPayment(WaitForPaymentCommand command)
+        {
+            await _commandBus.PublishAsync(command, CancellationToken.None);
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace Assignment.Infrastructure.Subscribers
             _queryProcessor = queryProcessor;
         }
 
-        public Task HandleAsync(IReadOnlyCollection<IDomainEvent> domainEvents, CancellationToken cancellationToken)
+        public async Task HandleAsync(IReadOnlyCollection<IDomainEvent> domainEvents, CancellationToken cancellationToken)
         {
             var domainEvent = domainEvents.Single();
 
@@ -33,14 +33,19 @@ namespace Assignment.Infrastructure.Subscribers
                 // Initiate process for this invoice
                 dynamic invoiceCreated = domainEvent.GetAggregateEvent();
                 Guid employeeId = invoiceCreated.EmployeeId;
-                _assignmentService.CreateAssignment(new CreateAssignmentCommand(AssignmentId.New, employeeId));
+                //Guid invoiceId = invoiceCreated.AggregateId;
+                await _assignmentService.CreateAssignment(new CreateAssignmentCommand(AssignmentId.New, employeeId));
             }
             if (domainEvent.EventType.FullName == "Invoice.Core.DomainModel.InvoiceSentEvent")
             {
+                // vanlig employee
                 // skicka till payment??
-
+                dynamic invoiceCreated = domainEvent.GetAggregateEvent();
+                Guid invoiceId = invoiceCreated.InvoiceId;
+                var assignment = await _queryProcessor.ProcessAsync(new GetAssignmentForInvoiceQuery(invoiceId), CancellationToken.None);
+                await _assignmentService.SetWaitingForPayment(new WaitForPaymentCommand(AssignmentId.With(assignment.AssignmentId), assignment.InvoiceId));
             }
-            return Task.CompletedTask;
+
         }
     }
 }

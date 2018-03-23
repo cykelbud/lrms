@@ -81,6 +81,7 @@ namespace Web
                 .UseMssqlReadModel<CustomerReadModel>()
                 .UseMssqlReadModel<InvoiceReadModel>()
                 .UseMssqlReadModel<AssignmentReadModel>()
+                .UseMssqlReadModel<PaymentReadModel>()
 
                 .CreateContainer();
 

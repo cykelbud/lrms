@@ -2,7 +2,7 @@
 
 namespace Payment.Requests
 {
-    public class ReceivePaymentFromRequest
+    public class ReceivePaymentRequest
     {
         public Guid InvoiceId { get; set; }
     }

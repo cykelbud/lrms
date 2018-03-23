@@ -8,5 +8,6 @@ namespace Assignment.Core.ApplicationServices
     {
         Task CreateAssignment(CreateAssignmentCommand command);
         Task<AssignmentDto[]> GetAll();
+        Task SetWaitingForPayment(WaitForPaymentCommand command);
     }
 }

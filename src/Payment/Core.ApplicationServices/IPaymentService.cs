@@ -1,9 +1,13 @@
-﻿using Payment.Requests;
+﻿using System.Threading.Tasks;
+using Payment.Requests;
+using Payment.Response;
 
 namespace Payment.Core.ApplicationServices
 {
-    internal interface IPaymentService
+    public interface IPaymentService
     {
-        void ReceivePayment(ReceivePaymentFromRequest request);
+        Task ReceivePayment(ReceivePaymentRequest request);
+        Task<PaymentDto[]> GetAll();
+        Task PaymentDue(PaymentDueRequest request);
     }
 }
