@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Assignment.Core.ApplicationServices;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Assignment.Registrations
 {
@@ -6,7 +7,7 @@ namespace Assignment.Registrations
     {
         public static IServiceCollection AddAssignmentRegistrations(this IServiceCollection services)
         {
-           // services.AddSingleton<IInvoiceService, Core.ApplicationServices.InvoiceService>();
+            services.AddSingleton<IAssignmentService, AssignmentService>();
 
             return services;
         }

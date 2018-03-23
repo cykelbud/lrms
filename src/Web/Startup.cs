@@ -80,6 +80,7 @@ namespace Web
                 .UseMssqlReadModel<EmployeeReadModel>()
                 .UseMssqlReadModel<CustomerReadModel>()
                 .UseMssqlReadModel<InvoiceReadModel>()
+                .UseMssqlReadModel<AssignmentReadModel>()
 
                 .CreateContainer();
 

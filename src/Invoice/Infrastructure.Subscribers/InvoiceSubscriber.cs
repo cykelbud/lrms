@@ -30,10 +30,8 @@ namespace Invoice.Infrastructure.Subscribers
 
             
             dynamic ee = @event.GetAggregateEvent();
-            var un = ee.UserName;
-            var pn = ee.PersonalIdentificationNumber;
-
-            return Task.FromResult(0);
+         
+            return Task.CompletedTask;
         }
     }
 }
