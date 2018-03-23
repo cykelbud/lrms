@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventFlow;
+using EventFlow.Queries;
 using Invoice.Core.DomainModel;
 using Invoice.Requests;
 
@@ -12,7 +13,7 @@ namespace Invoice.Core.ApplicationServices
     {
         private readonly ICommandBus _commandBus;
 
-        public InvoiceService(ICommandBus commandBus)
+        public InvoiceService(ICommandBus commandBus, IQueryProcessor queryProcessor)
         {
             _commandBus = commandBus;
         }
@@ -30,6 +31,9 @@ namespace Invoice.Core.ApplicationServices
 
         public async Task SendInvoice(SendInvoiceRequest request)
         {
+            
+
+
             await _commandBus.PublishAsync(new InvoiceSendCommand(InvoiceId.With(request.InvoiceId)),
                 CancellationToken.None);
         }

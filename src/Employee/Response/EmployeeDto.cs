@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Employee.Requests
+namespace Employee.Response
 {
     public class EmployeeDto
     {

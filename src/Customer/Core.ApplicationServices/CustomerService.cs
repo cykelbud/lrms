@@ -25,8 +25,8 @@ namespace Customer.Core.ApplicationServices
         {
             var customerId = CustomerId.New;
             await _commandBus.PublishAsync(
-                new CreateCustomerCommand(customerId, request.UserName, request.PersonalIdentificationNumber),
-                CancellationToken.None);
+                new CreateCustomerCommand(customerId, request.EmployeeId, request.UserName, request.PersonalIdentificationNumber, request.Address),
+                CancellationToken.None).ConfigureAwait(false);
             return customerId.GetGuid();
         }
 

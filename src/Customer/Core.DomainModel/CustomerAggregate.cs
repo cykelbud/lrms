@@ -1,4 +1,5 @@
-﻿using Customer.Commands;
+﻿using System;
+using Customer.Commands;
 using EventFlow.Aggregates;
 
 namespace Customer.Core.DomainModel
@@ -7,6 +8,7 @@ namespace Customer.Core.DomainModel
         IApply<CustomerCreatedEvent>
     {
         // state
+        public Guid EmployeeId { get; set; }
         public string UserName { get; set; }
         public string PersonalIdentificationNumber { get; set; }
 
@@ -16,11 +18,12 @@ namespace Customer.Core.DomainModel
 
         public void CreateCustomer(CreateCustomerCommand command)
         {
-            Emit(new CustomerCreatedEvent(command.UserName, command.PersonalIdentificationNumber));
+            Emit(new CustomerCreatedEvent(command.EmployeeId, command.UserName, command.PersonalIdentificationNumber, command.Address));
         }
 
         public void Apply(CustomerCreatedEvent aggregateEvent)
         {
+            EmployeeId = aggregateEvent.EmployeeId;
             UserName = aggregateEvent.UserName;
             PersonalIdentificationNumber = aggregateEvent.PersonalIdentificationNumber;
         }

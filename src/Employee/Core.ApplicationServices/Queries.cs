@@ -1,5 +1,5 @@
 ﻿using System;
-using Employee.Requests;
+using Employee.Response;
 using EventFlow.Queries;
 
 namespace Employee.Core.ApplicationServices

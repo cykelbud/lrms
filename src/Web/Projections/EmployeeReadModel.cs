@@ -1,31 +1,43 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Customer.Requests;
 using Employee.Core.DomainModel;
-using Employee.Requests;
+using Employee.Response;
 using EventFlow.Aggregates;
+using EventFlow.MsSql.ReadStores.Attributes;
 using EventFlow.ReadStores;
+using Invoice.Response;
 using Newtonsoft.Json;
 
-namespace Employee.Projections
+namespace Web.Projections
 {
     [Table("ReadModel-Employee")]
     public class EmployeeReadModel : IReadModel,
         IAmReadModelFor<EmployeeAggregate, EmployeeId, EmployeeCreatedEvent>,
         IAmReadModelFor<EmployeeAggregate, EmployeeId, EmployeeBankInfoAddedEvent>
     {
-        //[MsSqlReadModelIdentityColumn]
+        [MsSqlReadModelIdentityColumn]
         public string AggregateId { get; set; }
 
         public string Json { get; set; }
 
-        public EmployeeDto ToLoanApplication()
+        public EmployeeDto ToEmployeeDto()
         {
             var employee = JsonConvert.DeserializeObject<EmployeeDto>(Json);
             return employee;
         }
 
-        //public string PersonalIdentificationNumber { get; set; }
-        //public string UserName { get; set; }
-        //public string BankAccountNumber { get; set; }
+        public InvoiceEmployeeDto ToInvoiceEmployeeDto()
+        {
+            var employee = JsonConvert.DeserializeObject<EmployeeDto>(Json);
+            var invoiceCustomer = new InvoiceEmployeeDto()
+            {
+                EmployeeId = employee.Id,
+                Name = employee.UserName
+            };
+            return invoiceCustomer;
+        }
+
+
 
         public void Apply(IReadModelContext context, IDomainEvent<EmployeeAggregate, EmployeeId, EmployeeCreatedEvent> domainEvent)
         {

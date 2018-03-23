@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Employee.Core.ApplicationServices;
-using Employee.Projections;
-using Employee.Requests;
+using Employee.Response;
 using EventFlow.Core;
 using EventFlow.MsSql;
 using EventFlow.Queries;
+using Web.Projections;
 
 namespace Web.QueryHandlers
 {
@@ -30,7 +28,7 @@ namespace Web.QueryHandlers
                         cancellationToken,
                         "SELECT * FROM [ReadModel-Employee]")
                     .ConfigureAwait(false);
-            return readModels.Select(rm => rm.ToLoanApplication()).ToArray();
+            return readModels.Select(rm => rm.ToEmployeeDto()).ToArray();
         }
     }
 }

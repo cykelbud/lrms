@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Customer.Core.DomainModel;
 using EventFlow.Commands;
@@ -8,19 +9,25 @@ namespace Customer.Commands
 {
     public class CreateCustomerCommand : Command<CustomerAggregate, CustomerId>
     {
+        public Guid EmployeeId { get;  }
         public string UserName { get;  }
         public string PersonalIdentificationNumber { get;  }
+        public string Address { get; }
 
-        public CreateCustomerCommand(CustomerId aggregateId, string userName, string personalIdentificationNumber) : base(aggregateId)
+        public CreateCustomerCommand(CustomerId aggregateId, Guid employeeId, string userName, string personalIdentificationNumber, string address) : base(aggregateId)
         {
+            EmployeeId = employeeId;
             UserName = userName;
             PersonalIdentificationNumber = personalIdentificationNumber;
+            Address = address;
         }
 
-        public CreateCustomerCommand(CustomerId aggregateId, ISourceId sourceId, string userName, string personalIdentificationNumber) : base(aggregateId, sourceId)
+        public CreateCustomerCommand(CustomerId aggregateId, ISourceId sourceId, Guid employeeId, string userName, string personalIdentificationNumber, string address) : base(aggregateId, sourceId)
         {
+            EmployeeId = employeeId;
             UserName = userName;
             PersonalIdentificationNumber = personalIdentificationNumber;
+            Address = address;
         }
     }
 

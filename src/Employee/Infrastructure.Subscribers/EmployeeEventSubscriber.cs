@@ -6,13 +6,13 @@ using EventFlow.Aggregates;
 using EventFlow.Queries;
 using EventFlow.Subscribers;
 
-namespace Invoice.Infrastructure.Subscribers
+namespace Employee.Infrastructure.Subscribers
 {
-    public class InvoiceSubscriber : ISubscribeSynchronousToAll
+    public class EmployeeEventSubscriber : ISubscribeSynchronousToAll
     {
         private readonly IQueryProcessor _queryProcessor;
 
-        public InvoiceSubscriber(IQueryProcessor queryProcessor)
+        public EmployeeEventSubscriber(IQueryProcessor queryProcessor)
         {
             _queryProcessor = queryProcessor;
         }
@@ -20,18 +20,14 @@ namespace Invoice.Infrastructure.Subscribers
         public Task HandleAsync(IReadOnlyCollection<IDomainEvent> domainEvents, CancellationToken cancellationToken)
         {
 
-            var @event = domainEvents.Single();
-            var e = @event.GetAggregateEvent();
+            var domainEvent = domainEvents.Single();
 
-            if (@event.EventType.FullName == "Customer.Core.DomainModel.CustomerCreatedEvent")
+            if (domainEvent.EventType.FullName == "Customer.Core.DomainModel.CustomerCreatedEvent")
             {
-                
+                // store event info
+                dynamic aggregateEvent = domainEvent.GetAggregateEvent();
             }
 
-            
-            dynamic ee = @event.GetAggregateEvent();
-            var un = ee.UserName;
-            var pn = ee.PersonalIdentificationNumber;
 
             return Task.FromResult(0);
         }

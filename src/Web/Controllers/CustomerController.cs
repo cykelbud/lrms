@@ -29,7 +29,7 @@ namespace Web.Controllers
         }
 
         [HttpPost("")]
-        public async Task CreateEmployee([FromBody] CreateCustomerRequest request)
+        public async Task CreateCustomer([FromBody] CreateCustomerRequest request)
         {
             await _customerService.CreateCustomer(request);
         }

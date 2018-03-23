@@ -4,11 +4,11 @@ using EventFlow.Queries;
 
 namespace Customer.Core.DomainServices
 {
-    internal class GetAllCustomersQuery : IQuery<CustomerDto[]>
+    public class GetAllCustomersQuery : IQuery<CustomerDto[]>
     {
     }
 
-    internal class GetCustomerQuery : IQuery<CustomerDto>
+    public class GetCustomerQuery : IQuery<CustomerDto>
     {
         public Guid Id { get; }
 

@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Assignment.Registrations;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Customer.Registrations;
-using Employee.Projections;
 using Employee.Registrations;
 using EventFlow;
 using EventFlow.Autofac.Extensions;
@@ -25,6 +19,8 @@ using Invoice.Registrations;
 using Payment.Registrations;
 using Payout.Registrations;
 using Swashbuckle.AspNetCore.Swagger;
+using Web.Projections;
+using EmployeeReadModel = Web.Projections.EmployeeReadModel;
 
 namespace Web
 {
@@ -77,11 +73,13 @@ namespace Web
                 .AddDefaults(InvoiceAssembly)
                 .AddDefaults(PaymentAssembly)
                 .AddDefaults(PayoutAssembly)
+                
                 .ConfigureMsSql(MsSqlConfiguration.New.SetConnectionString(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=LrmsDb;Integrated Security=True;"))
+                
                 .UseMssqlEventStore()
-
-                //.AddQueryHandlers(typeof(GetAllLoanApplicationsQueryHandler))
                 .UseMssqlReadModel<EmployeeReadModel>()
+                .UseMssqlReadModel<CustomerReadModel>()
+                .UseMssqlReadModel<InvoiceReadModel>()
 
                 .CreateContainer();
 
