@@ -34,6 +34,12 @@ namespace Payment.Core.ApplicationServices
         {
             //_commandBus.PublishAsync(new PaymenrDueCommand(), CancellationToken.None);
         }
+
+        public async Task SetWaitingForPayment(WaitingForPaymentRequest request)
+        {
+            await _commandBus.PublishAsync(new WaitForPaymentCommand(PaymentId.New, request.InvoiceId),
+                CancellationToken.None);
+        }
     }
 
 }

@@ -10,7 +10,8 @@ namespace Web.Projections
 {
     [Table("ReadModel-Payment")]
     public class PaymentReadModel : IReadModel,
-        IAmReadModelFor<PaymentAggregate, PaymentId, WaitingForPaymentEvent>
+        IAmReadModelFor<PaymentAggregate, PaymentId, WaitingForPaymentEvent>,
+        IAmReadModelFor<PaymentAggregate, PaymentId, PaymentReceivedEvent>
     {
         [MsSqlReadModelIdentityColumn]
         public string AggregateId { get; set; }
@@ -29,12 +30,19 @@ namespace Web.Projections
             var e = domainEvent.AggregateEvent;
             var payment = new PaymentDto()
             {
-               
+               PaymentId = domainEvent.AggregateIdentity.GetGuid(),
+               InvoiceId = e.InvoiceId,
             };
 
             Json = JsonConvert.SerializeObject(payment);
         }
 
-      
+
+        public void Apply(IReadModelContext context, IDomainEvent<PaymentAggregate, PaymentId, PaymentReceivedEvent> domainEvent)
+        {
+            var payment = JsonConvert.DeserializeObject<PaymentDto>(Json);
+            payment.PaymentReceivedDate = domainEvent.AggregateEvent.ReceivedDate;
+            Json = JsonConvert.SerializeObject(payment);
+        }
     }
 }

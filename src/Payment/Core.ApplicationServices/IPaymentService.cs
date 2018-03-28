@@ -9,5 +9,6 @@ namespace Payment.Core.ApplicationServices
         Task ReceivePayment(ReceivePaymentRequest request);
         Task<PaymentDto[]> GetAll();
         Task PaymentDue(PaymentDueRequest request);
+        Task SetWaitingForPayment(WaitingForPaymentRequest request);
     }
 }

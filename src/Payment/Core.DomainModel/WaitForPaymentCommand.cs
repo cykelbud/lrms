@@ -7,10 +7,11 @@ namespace Payment.Core.DomainModel
 {
     public class WaitForPaymentCommand : Command<PaymentAggregate, PaymentId>
     {
-        public Guid InvoiceId { get; set; }
+        public Guid InvoiceId { get; }
 
-        public WaitForPaymentCommand(PaymentId aggregateId) : base(aggregateId)
+        public WaitForPaymentCommand(PaymentId aggregateId, Guid invoiceId) : base(aggregateId)
         {
+            InvoiceId = invoiceId;
         }
     }
 

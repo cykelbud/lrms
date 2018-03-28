@@ -1,7 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Employee.Core.ApplicationServices;
-using Employee.Requests;
-using Employee.Response;
 using Microsoft.AspNetCore.Mvc;
 using Payment.Core.ApplicationServices;
 using Payment.Requests;

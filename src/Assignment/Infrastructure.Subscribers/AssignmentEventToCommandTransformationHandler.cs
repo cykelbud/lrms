@@ -8,6 +8,8 @@ using Assignment.Core.DomainModel;
 using EventFlow.Aggregates;
 using EventFlow.Queries;
 using EventFlow.Subscribers;
+using Payment.Core.ApplicationServices;
+using Payment.Requests;
 
 namespace Assignment.Infrastructure.Subscribers
 {
@@ -15,11 +17,15 @@ namespace Assignment.Infrastructure.Subscribers
     {
         private readonly IAssignmentService _assignmentService;
         private readonly IQueryProcessor _queryProcessor;
+        private readonly IPaymentService _paymentService;
 
-        public AssignmentEventToCommandTransformationHandler(IAssignmentService assignmentService, IQueryProcessor queryProcessor)
+        public AssignmentEventToCommandTransformationHandler(IAssignmentService assignmentService, 
+            IQueryProcessor queryProcessor,
+            IPaymentService paymentService)
         {
             _assignmentService = assignmentService;
             _queryProcessor = queryProcessor;
+            _paymentService = paymentService;
         }
 
         public async Task HandleAsync(IReadOnlyCollection<IDomainEvent> domainEvents, CancellationToken cancellationToken)
@@ -44,8 +50,15 @@ namespace Assignment.Infrastructure.Subscribers
                 Guid invoiceId = invoiceCreated.InvoiceId;
                 var assignment = await _queryProcessor.ProcessAsync(new GetAssignmentForInvoiceQuery(invoiceId), CancellationToken.None);
                 await _assignmentService.SetWaitingForPayment(new WaitForPaymentCommand(AssignmentId.With(assignment.AssignmentId), assignment.InvoiceId));
+                await _paymentService.SetWaitingForPayment(new WaitingForPaymentRequest(){InvoiceId = invoiceId});
+            }
+            if (domainEvent.EventType.FullName == "Payment.Core.DomainModel.PaymentReceivedEvent")
+            {
+                // betalning mottagen, för vanlig employee, betala lön
+
             }
 
         }
+        
     }
 }

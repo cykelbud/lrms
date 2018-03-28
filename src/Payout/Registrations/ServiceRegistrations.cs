@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Payout.Core.ApplicationServices;
 
 namespace Payout.Registrations
 {
@@ -6,7 +7,7 @@ namespace Payout.Registrations
     {
         public static IServiceCollection AddPayoutRegistrations(this IServiceCollection services)
         {
-            //services.AddSingleton<IPaymentService, PaymentService>();
+            services.AddSingleton<IPayoutService, PayoutService>();
 
             return services;
         }

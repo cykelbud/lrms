@@ -6,5 +6,6 @@ namespace Payment.Response
     {
         public Guid PaymentId { get; set; }
         public Guid InvoiceId { get; set; }
+        public DateTime PaymentReceivedDate { get; set; }
     }
 }
