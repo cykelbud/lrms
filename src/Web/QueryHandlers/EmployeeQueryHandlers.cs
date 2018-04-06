@@ -24,7 +24,7 @@ namespace Web.QueryHandlers
         public async Task<EmployeeDto[]> ExecuteQueryAsync(GetAllEmployeesQuery query, CancellationToken cancellationToken)
         {
             var readModels = await _msSqlConnection.QueryAsync<EmployeeReadModel>(
-                        Label.Named("mssql-fetch-loanapp-read-model"),
+                        Label.Named(nameof(GetAllEmployeesQueryHandler)),
                         cancellationToken,
                         "SELECT * FROM [ReadModel-Employee]")
                     .ConfigureAwait(false);

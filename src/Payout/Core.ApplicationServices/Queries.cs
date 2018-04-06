@@ -28,6 +28,25 @@ namespace Payout.Core.ApplicationServices
         }
     }
 
+    public class GetPayoutEmployeeQuery : IQuery<PayoutEmployeeDto>
+    {
+        public Guid EmployeeId { get; }
+
+        public GetPayoutEmployeeQuery(Guid employeeId)
+        {
+            EmployeeId = employeeId;
+        }
+    }
+
+    public class GetPayoutInvoiceQuery : IQuery<PayoutInvoiceDto>
+    {
+        public Guid InvoiceId { get; }
+
+        public GetPayoutInvoiceQuery(Guid invoiceId)
+        {
+            InvoiceId = invoiceId;
+        }
+    }
 
 
 }

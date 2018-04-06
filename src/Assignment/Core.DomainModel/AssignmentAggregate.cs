@@ -5,10 +5,10 @@ namespace Assignment.Core.DomainModel
 {
     public class AssignmentAggregate : AggregateRoot<AssignmentAggregate, AssignmentId>,
         IApply<AssignmentCreatedEvent>,
-        IApply<WaitingForPaymentEvent>
+        IApply<WaitingForPaymentEvent>,
+        IApply<AssignmentClosedEvent>
     {
         // state
-        public Guid EmployeeId { get; set; }
         public Guid InvoiceId { get; set; }
         public State CurrentState { get; set; }
 
@@ -19,12 +19,12 @@ namespace Assignment.Core.DomainModel
         
         public void CreateAssignment(CreateAssignmentCommand command)
         {
-            Emit(new AssignmentCreatedEvent(command.EmployeeId));
+            Emit(new AssignmentCreatedEvent(command.InvoiceId));
         }
 
         public void Apply(AssignmentCreatedEvent aggregateEvent)
         {
-            EmployeeId = aggregateEvent.EmployeeId;
+            InvoiceId = aggregateEvent.InvoiceId;
             CurrentState = State.ProcessingInvoice;
         }
 
@@ -36,7 +36,16 @@ namespace Assignment.Core.DomainModel
         public void Apply(WaitingForPaymentEvent aggregateEvent)
         {
             CurrentState = State.ProcessingPayment;
-            InvoiceId = aggregateEvent.InvoiceId;
+        }
+
+        public void CloseAssignment(CloseAssignmentCommand command)
+        {
+            Emit(new AssignmentClosedEvent());
+        }
+
+        public void Apply(AssignmentClosedEvent aggregateEvent)
+        {
+            CurrentState = State.Closed;
         }
     }
 
@@ -45,6 +54,6 @@ namespace Assignment.Core.DomainModel
         ProcessingInvoice,
         ProcessingPayment,
         ProcessingPayout,
-        Completed
+        Closed
     }
 }

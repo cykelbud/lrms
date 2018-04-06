@@ -10,13 +10,15 @@ namespace Payout.Core.DomainModel
         public Guid InvoiceId { get; }
         public decimal Amount { get;  }
         public DateTime PayoutDate { get; }
+        public Guid EmployeeId { get; }
 
 
-        public PayEmployeeCommand(PayoutId aggregateId, Guid invoiceId, decimal amount, DateTime payoutDate) : base(aggregateId)
+        public PayEmployeeCommand(PayoutId aggregateId, Guid invoiceId, decimal amount, DateTime payoutDate, Guid employeeId) : base(aggregateId)
         {
             InvoiceId = invoiceId;
             Amount = amount;
             PayoutDate = payoutDate;
+            EmployeeId = employeeId;
         }
     }
 

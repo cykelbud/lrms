@@ -7,11 +7,11 @@ namespace Assignment.Core.DomainModel
 {
     public class CreateAssignmentCommand : Command<AssignmentAggregate, AssignmentId>
     {
-        public Guid EmployeeId { get; }
+        public Guid InvoiceId { get; }
 
-        public CreateAssignmentCommand(AssignmentId aggregateId, Guid employeeId) : base(aggregateId)
+        public CreateAssignmentCommand(AssignmentId aggregateId, Guid invoiceId) : base(aggregateId)
         {
-            EmployeeId = employeeId;
+            InvoiceId = invoiceId;
         }
     }
 

@@ -7,6 +7,7 @@ using EventFlow.MsSql.ReadStores.Attributes;
 using EventFlow.ReadStores;
 using Invoice.Response;
 using Newtonsoft.Json;
+using Payout.Response;
 
 namespace Web.Projections
 {
@@ -35,6 +36,17 @@ namespace Web.Projections
                 Name = employee.UserName
             };
             return invoiceCustomer;
+        }
+
+        public PayoutEmployeeDto ToPayoutEmployeeDto()
+        {
+            var employee = JsonConvert.DeserializeObject<EmployeeDto>(Json);
+            var payoutEmployee = new PayoutEmployeeDto()
+            {
+                EmployeeId = employee.Id,
+                BankAccountNumber = employee.BankAccountNumber
+            };
+            return payoutEmployee;
         }
 
 

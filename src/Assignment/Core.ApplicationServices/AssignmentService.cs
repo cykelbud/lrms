@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Assignment.Core.DomainModel;
+using Assignment.Infrastructure.Subscribers;
 using Assignment.Response;
 using EventFlow;
 using EventFlow.Queries;
@@ -30,6 +31,11 @@ namespace Assignment.Core.ApplicationServices
         }
 
         public async Task SetWaitingForPayment(WaitForPaymentCommand command)
+        {
+            await _commandBus.PublishAsync(command, CancellationToken.None);
+        }
+
+        public async Task CloseAssignment(CloseAssignmentCommand command)
         {
             await _commandBus.PublishAsync(command, CancellationToken.None);
         }

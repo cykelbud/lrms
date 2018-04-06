@@ -23,18 +23,30 @@ namespace Payout.Core.ApplicationServices
 
         public async Task<PayoutDto[]> GetAll()
         {
-            return null;
-            //return await _queryProcessor.ProcessAsync(new GetAllPaymentsQuery(), CancellationToken.None);
+            return await _queryProcessor.ProcessAsync(new GetAllPayoutQuery(), CancellationToken.None);
         }
-
 
 
         public async Task PayEmployee(PayEmployeeRequest request)
         {
-            // make payment to lets say a bank
+            // Immediate wage payout to employee, no flow.
 
-            await _commandBus.PublishAsync(new PayEmployeeCommand(PayoutId.New, request.InvoiceId, 0, DateTime.Now),
+            // get employee from invoice
+            var payout = await _queryProcessor.ProcessAsync(new GetPayoutByInvoiceIdQuery(request.InvoiceId), CancellationToken.None);
+            // get bankaccount number from employee
+            var payoutEmployee = await _queryProcessor.ProcessAsync(new GetPayoutEmployeeQuery(payout.EmployeeId), CancellationToken.None);
+            // get amount from invoice
+            var payoutInvoice = await _queryProcessor.ProcessAsync(new GetPayoutInvoiceQuery(request.InvoiceId), CancellationToken.None);
+
+            // make payment to lets say a bank
+            var amount = payoutInvoice.Amount * 0.95m; // 5% commission
+            var accountNo = payoutEmployee.BankAccountNumber;
+            // Todo
+
+            // store this command to raise an event to others
+            await _commandBus.PublishAsync(new PayEmployeeCommand(PayoutId.New, request.InvoiceId, amount, DateTime.Now, payout.EmployeeId),
                 CancellationToken.None);
         }
     }
+
 }

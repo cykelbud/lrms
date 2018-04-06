@@ -5,11 +5,11 @@ namespace Assignment.Core.DomainModel
 {
     public class AssignmentCreatedEvent : AggregateEvent<AssignmentAggregate, AssignmentId>
     {
-        public Guid EmployeeId { get; }
+        public Guid InvoiceId { get; }
 
-        public AssignmentCreatedEvent(Guid employeeId)
+        public AssignmentCreatedEvent(Guid invoiceId)
         {
-            EmployeeId = employeeId;
+            InvoiceId = invoiceId;
         }
     }
 }

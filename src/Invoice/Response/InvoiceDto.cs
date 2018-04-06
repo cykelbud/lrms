@@ -5,6 +5,7 @@ namespace Invoice.Response
 {
     public class InvoiceDto
     {
+        public Guid InvoiceId { get; set; }
         public Guid EmployeeId { get; set; }
         public Guid CustomerId { get; set; }
         public DateTime StartDate { get; set; }

@@ -17,7 +17,7 @@ namespace Web.Controllers
         }
 
         [HttpGet()]
-        public async Task<PaymentDto[]> GetAllE()
+        public async Task<PaymentDto[]> GetAll()
         {
             return await _paymentService.GetAll();
         }

@@ -10,7 +10,8 @@ namespace Web.Projections
 {
     [Table("ReadModel-Assignment")]
     public class AssignmentReadModel : IReadModel,
-        IAmReadModelFor<AssignmentAggregate, AssignmentId, AssignmentCreatedEvent>
+        IAmReadModelFor<AssignmentAggregate, AssignmentId, AssignmentCreatedEvent>,
+        IAmReadModelFor<AssignmentAggregate, AssignmentId, WaitingForPaymentEvent>
     {
         [MsSqlReadModelIdentityColumn]
         public string AggregateId { get; set; }
@@ -26,14 +27,19 @@ namespace Web.Projections
         public void Apply(IReadModelContext context, IDomainEvent<AssignmentAggregate, AssignmentId, AssignmentCreatedEvent> domainEvent)
         {
             AggregateId = domainEvent.AggregateIdentity.GetGuid().ToString("D");
+            var e = domainEvent.AggregateEvent;
             var assignment = new AssignmentDto()
             {
-                EmployeeId = domainEvent.AggregateIdentity.GetGuid()
+                AssignmentId = domainEvent.AggregateIdentity.GetGuid(),
+                InvoiceId = e.InvoiceId
             };
 
             Json = JsonConvert.SerializeObject(assignment);
         }
 
-      
+
+        public void Apply(IReadModelContext context, IDomainEvent<AssignmentAggregate, AssignmentId, WaitingForPaymentEvent> domainEvent)
+        {
+        }
     }
 }

@@ -4,7 +4,7 @@ using EventFlow.Aggregates;
 namespace Payout.Core.DomainModel
 {
     public class PayoutAggregate : AggregateRoot<PayoutAggregate, PayoutId>,
-        IApply<EmployeePaiedEvent>
+        IApply<EmployeePaidEvent>
     {
         // state
         public DateTime PayoutDate { get; set; }
@@ -18,10 +18,10 @@ namespace Payout.Core.DomainModel
 
         public void PayEmployee(PayEmployeeCommand command)
         {
-            Emit(new EmployeePaiedEvent(command.InvoiceId, command.Amount, command.PayoutDate));
+            Emit(new EmployeePaidEvent(command.InvoiceId, command.Amount, command.PayoutDate, command.EmployeeId));
         }
 
-        public void Apply(EmployeePaiedEvent aggregateEvent)
+        public void Apply(EmployeePaidEvent aggregateEvent)
         {
             InvoiceId = aggregateEvent.InvoiceId;
             Amount  = aggregateEvent.Amount;
