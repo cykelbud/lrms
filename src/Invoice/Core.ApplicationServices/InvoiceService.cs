@@ -40,8 +40,8 @@ namespace Invoice.Core.ApplicationServices
 
             // Get data stored in this service
             var invoice = await _queryProcessor.ProcessAsync(new GetInvoiceQuery(request.InvoiceId), CancellationToken.None);
-            var invoiceEmployee = await _queryProcessor.ProcessAsync(new GetInvoiceEmployeeQuery(request.InvoiceId), CancellationToken.None);
-            var invoiceCustomer = await _queryProcessor.ProcessAsync(new GetInvoiceCustomerQuery(request.InvoiceId), CancellationToken.None);
+            var invoiceEmployee = await _queryProcessor.ProcessAsync(new GetInvoiceEmployeeQuery(invoice.EmployeeId), CancellationToken.None);
+            var invoiceCustomer = await _queryProcessor.ProcessAsync(new GetInvoiceCustomerQuery(invoice.CustomerId), CancellationToken.None);
             var amount = invoice.InvoiceItems.Sum(item => item.Price * invoice.Vat);
 
             // print with aggregated data

@@ -5,7 +5,8 @@ namespace Invoice.Core.DomainModel
 {
     public class InvoiceAggregate : 
         AggregateRoot<InvoiceAggregate, InvoiceId>,
-        IApply<InvoiceCreatedEvent>
+        IApply<InvoiceCreatedEvent>,
+        IApply<InvoiceSentEvent>
     {
         // state
         public Guid CustomerId { get; private set; }
@@ -15,6 +16,7 @@ namespace Invoice.Core.DomainModel
         public string InvoiceName { get; private set; }
         public decimal Vat { get; private set; }
         public InvoiceItem[] InvoiceItems { get; private set; }
+        public bool IsSent { get; set; }
 
         public InvoiceAggregate(InvoiceId id) : base(id)
         {
@@ -43,5 +45,9 @@ namespace Invoice.Core.DomainModel
         }
 
 
+        public void Apply(InvoiceSentEvent aggregateEvent)
+        {
+            IsSent = true;
+        }
     }
 }

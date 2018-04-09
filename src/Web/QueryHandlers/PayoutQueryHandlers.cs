@@ -14,6 +14,11 @@ namespace Web.QueryHandlers
 
     public class GetPayoutQueryHandler : IQueryHandler<GetPayoutQuery, PayoutDto>
     {
+        public GetPayoutQueryHandler()
+        {
+            
+        }
+
         private readonly IMssqlReadModelStore<PayoutReadModel> _readStore;
 
         public GetPayoutQueryHandler(IMssqlReadModelStore<PayoutReadModel> readStore)
