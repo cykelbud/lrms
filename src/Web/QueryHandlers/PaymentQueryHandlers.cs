@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventFlow.Core;
 using EventFlow.MsSql;
+using EventFlow.MsSql.ReadStores;
 using EventFlow.Queries;
 using Payment.Core.ApplicationServices;
 using Payment.Response;
@@ -13,25 +15,22 @@ namespace Web.QueryHandlers
 
     public class GetPaymentQueryHandler : IQueryHandler<GetPaymentQuery, PaymentDto>
     {
-        private readonly IMsSqlConnection _msSqlConnection;
+        private readonly IMssqlReadModelStore<PaymentReadModel> _readStore;
 
-        public GetPaymentQueryHandler(IMsSqlConnection msSqlConnection)
+        public GetPaymentQueryHandler(IMssqlReadModelStore<PaymentReadModel> readStore)
         {
-            _msSqlConnection = msSqlConnection;
+            _readStore = readStore;
         }
 
         public async Task<PaymentDto> ExecuteQueryAsync(GetPaymentQuery query, CancellationToken cancellationToken)
         {
-            var readModels = await _msSqlConnection.QueryAsync<PaymentReadModel>(
-                    Label.Named(nameof(GetPaymentQueryHandler)),
-                    cancellationToken,
-                    "SELECT * FROM [ReadModel-Payment]")
-                .ConfigureAwait(false);
-            return readModels.Where(payment => payment.AggregateId == query.Id.ToString("D")).Select(rm => rm.ToPaymentDto()).SingleOrDefault();
+            var invoiceId = query.PaymentId.ToString("D");
+            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            return readModel.ReadModel.ToPaymentDto();
         }
     }
 
-    public class GetAllPaymentsQueryHandler : IQueryHandler<GetAllPaymentsQuery, PaymentDto[]>
+    public class GetAllPaymentsQueryHandler : IQueryHandler<GetAllPaymentsQuery, IEnumerable<PaymentDto>>
     {
         private readonly IMsSqlConnection _msSqlConnection;
 
@@ -40,14 +39,14 @@ namespace Web.QueryHandlers
             _msSqlConnection = msSqlConnection;
         }
 
-        public async Task<PaymentDto[]> ExecuteQueryAsync(GetAllPaymentsQuery query, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PaymentDto>> ExecuteQueryAsync(GetAllPaymentsQuery query, CancellationToken cancellationToken)
         {
             var readModels = await _msSqlConnection.QueryAsync<PaymentReadModel>(
                         Label.Named(nameof(GetAllInvoicesQueryHandler)),
                         cancellationToken,
                         "SELECT * FROM [ReadModel-Payment]")
                     .ConfigureAwait(false);
-            return readModels.Select(rm => rm.ToPaymentDto()).ToArray();
+            return readModels.Select(rm => rm.ToPaymentDto());
         }
     }
 

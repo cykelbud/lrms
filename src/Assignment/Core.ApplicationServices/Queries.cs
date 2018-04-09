@@ -10,21 +10,21 @@ namespace Assignment.Core.ApplicationServices
 
     public class GetAssignmentQuery : IQuery<AssignmentDto>
     {
-        public Guid Id { get; }
+        public Guid AssignmentId { get; }
 
-        public GetAssignmentQuery(Guid id)
+        public GetAssignmentQuery(Guid assignmentId)
         {
-            Id = id;
+            AssignmentId = assignmentId;
         }
     }
 
     public class GetAssignmentForInvoiceQuery : IQuery<AssignmentDto>
     {
-        public Guid Id { get; }
+        public Guid InvoiceId { get; }
 
-        public GetAssignmentForInvoiceQuery(Guid id)
+        public GetAssignmentForInvoiceQuery(Guid invoiceId)
         {
-            Id = id;
+            InvoiceId = invoiceId;
         }
     }
 

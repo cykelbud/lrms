@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Assignment.Core.DomainModel;
-using Assignment.Infrastructure.Subscribers;
 using Assignment.Response;
 using EventFlow;
 using EventFlow.Queries;

@@ -5,6 +5,7 @@ using Assignment.Core.ApplicationServices;
 using Assignment.Response;
 using EventFlow.Core;
 using EventFlow.MsSql;
+using EventFlow.MsSql.ReadStores;
 using EventFlow.Queries;
 using Web.Projections;
 
@@ -13,22 +14,20 @@ namespace Web.QueryHandlers
 
     public class GetAssignmentQueryHandler : IQueryHandler<GetAssignmentQuery, AssignmentDto>
     {
-        private readonly IMsSqlConnection _msSqlConnection;
+        private readonly IMssqlReadModelStore<AssignmentReadModel> _readStore;
 
-        public GetAssignmentQueryHandler(IMsSqlConnection msSqlConnection)
+        public GetAssignmentQueryHandler(IMssqlReadModelStore<AssignmentReadModel> readStore)
         {
-            _msSqlConnection = msSqlConnection;
+            _readStore = readStore;
         }
 
         public async Task<AssignmentDto> ExecuteQueryAsync(GetAssignmentQuery query, CancellationToken cancellationToken)
         {
-            var readModels = await _msSqlConnection.QueryAsync<AssignmentReadModel>(
-                    Label.Named(nameof(GetAssignmentQueryHandler)),
-                    cancellationToken,
-                    "SELECT * FROM [ReadModel-Assignment]")
-                .ConfigureAwait(false);
-            return readModels.Where(assignment => assignment.AggregateId == query.Id.ToString("D")).Select(rm => rm.ToAssignmentDto()).SingleOrDefault();
+            var invoiceId = query.AssignmentId.ToString("D");
+            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            return readModel.ReadModel.ToAssignmentDto();
         }
+
     }
 
     public class GetAllAssignmentsQueryHandler : IQueryHandler<GetAllAssignmentsQuery, AssignmentDto[]>

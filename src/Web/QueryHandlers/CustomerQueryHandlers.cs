@@ -28,5 +28,7 @@ namespace Web.QueryHandlers
                 .ConfigureAwait(false);
             return readModels.Select(rm => rm.ToCustomerDto()).ToArray();
         }
+
+        
     }
 }

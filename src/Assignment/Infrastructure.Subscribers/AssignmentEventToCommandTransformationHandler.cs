@@ -52,7 +52,8 @@ namespace Assignment.Infrastructure.Subscribers
             {
                 // Initiate process for this invoice
                 dynamic invoiceCreated = domainEvent.GetAggregateEvent();
-                Guid invoiceId = invoiceCreated.Invoice;
+                var id = domainEvent.GetIdentity();
+                Guid invoiceId = Guid.Parse(id.Value.Replace("invoice-", ""));
                 await _assignmentService.CreateAssignment(new CreateAssignmentCommand(AssignmentId.New, invoiceId));
             }
             if (domainEvent.EventType.FullName == "Invoice.Core.DomainModel.InvoiceSentEvent")

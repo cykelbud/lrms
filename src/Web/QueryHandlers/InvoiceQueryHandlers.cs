@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventFlow.Core;
 using EventFlow.MsSql;
+using EventFlow.MsSql.ReadStores;
 using EventFlow.Queries;
 using Invoice.Core.DomainServices;
 using Invoice.Response;
@@ -13,21 +14,18 @@ namespace Web.QueryHandlers
 
     public class GetInvoiceQueryHandler : IQueryHandler<GetInvoiceQuery, InvoiceDto>
     {
-        private readonly IMsSqlConnection _msSqlConnection;
+        private readonly IMssqlReadModelStore<InvoiceReadModel> _readStore;
 
-        public GetInvoiceQueryHandler(IMsSqlConnection msSqlConnection)
+        public GetInvoiceQueryHandler(IMssqlReadModelStore<InvoiceReadModel> readStore)
         {
-            _msSqlConnection = msSqlConnection;
+            _readStore = readStore;
         }
 
         public async Task<InvoiceDto> ExecuteQueryAsync(GetInvoiceQuery query, CancellationToken cancellationToken)
         {
-            var readModels = await _msSqlConnection.QueryAsync<InvoiceReadModel>(
-                    Label.Named(nameof(GetInvoiceQueryHandler)),
-                    cancellationToken,
-                    "SELECT * FROM [ReadModel-Invoice]")
-                .ConfigureAwait(false);
-            return readModels.Where(invoice => invoice.AggregateId == query.Id.ToString("D")).Select(rm => rm.ToInvoiceDto()).SingleOrDefault();
+            var invoiceId = query.InvoiceId.ToString("D");
+            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            return readModel.ReadModel.ToInvoiceDto();
         }
     }
 
@@ -53,40 +51,35 @@ namespace Web.QueryHandlers
 
     public class GetInvoiceCustomerQueryHandler : IQueryHandler<GetInvoiceCustomerQuery, InvoiceCustomerDto>
     {
-        private readonly IMsSqlConnection _msSqlConnection;
+        private readonly IMssqlReadModelStore<CustomerReadModel> _readStore;
 
-        public GetInvoiceCustomerQueryHandler(IMsSqlConnection msSqlConnection)
+        public GetInvoiceCustomerQueryHandler(IMssqlReadModelStore<CustomerReadModel> readStore)
         {
-            _msSqlConnection = msSqlConnection;
+            _readStore = readStore;
         }
+
         public async Task<InvoiceCustomerDto> ExecuteQueryAsync(GetInvoiceCustomerQuery query, CancellationToken cancellationToken)
         {
-            var readModels = await _msSqlConnection.QueryAsync<CustomerReadModel>(
-                    Label.Named(nameof(GetInvoiceCustomerQueryHandler)),
-                    cancellationToken,
-                    "SELECT * FROM [ReadModel-Customer]")
-                .ConfigureAwait(false);
-            return readModels.Where(ic => ic.AggregateId == query.Id.ToString("D")).Select(rm => rm.ToInvoiceCustomerDto()).SingleOrDefault();
+            var invoiceId = query.CustomerId.ToString("D");
+            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            return readModel.ReadModel.ToInvoiceCustomerDto();
         }
     }
 
     public class GetInvoiceEmployeeQueryHandler : IQueryHandler<GetInvoiceEmployeeQuery, InvoiceEmployeeDto>
     {
-        private readonly IMsSqlConnection _msSqlConnection;
+        private readonly IMssqlReadModelStore<EmployeeReadModel> _readStore;
 
-        public GetInvoiceEmployeeQueryHandler(IMsSqlConnection msSqlConnection)
+        public GetInvoiceEmployeeQueryHandler(IMssqlReadModelStore<EmployeeReadModel> readStore)
         {
-            _msSqlConnection = msSqlConnection;
+            _readStore = readStore;
         }
 
         public async Task<InvoiceEmployeeDto> ExecuteQueryAsync(GetInvoiceEmployeeQuery query, CancellationToken cancellationToken)
         {
-            var readModels = await _msSqlConnection.QueryAsync<EmployeeReadModel>(
-                    Label.Named(nameof(GetInvoiceEmployeeQueryHandler)),
-                    cancellationToken,
-                    "SELECT * FROM [ReadModel-Employee]")
-                .ConfigureAwait(false);
-            return readModels.Where(ic => ic.AggregateId == query.Id.ToString("D")).Select(rm => rm.ToInvoiceEmployeeDto()).SingleOrDefault();
+            var invoiceId = query.EmployeeId.ToString("D");
+            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            return readModel.ReadModel.ToInvoiceEmployeeDto();
         }
     }
 }

@@ -23,15 +23,15 @@ namespace Web.Controllers
         }
 
         [HttpGet("{customerId}")]
-        public async Task<CustomerDto> GetEmployee(Guid customerId)
+        public async Task<CustomerDto> GetCustomer(Guid customerId)
         {
             return await _customerService.GetCustomer(customerId);
         }
 
         [HttpPost("")]
-        public async Task CreateCustomer([FromBody] CreateCustomerRequest request)
+        public async Task<Guid> CreateCustomer([FromBody] CreateCustomerRequest request)
         {
-            await _customerService.CreateCustomer(request);
+            return await _customerService.CreateCustomer(request);
         }
     }
 }

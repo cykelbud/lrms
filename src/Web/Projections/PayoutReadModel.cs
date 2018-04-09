@@ -12,6 +12,11 @@ namespace Web.Projections
     public class PayoutReadModel : IReadModel,
         IAmReadModelFor<PayoutAggregate, PayoutId, EmployeePaidEvent>
     {
+        public PayoutReadModel()
+        {
+            
+        }
+
         [MsSqlReadModelIdentityColumn]
         public string AggregateId { get; set; }
 

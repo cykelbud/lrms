@@ -17,9 +17,9 @@ namespace Web.Controllers
         }
 
         [HttpPost("")]
-        public async Task CreateInvoice([FromBody] CreateInvoiceRequest request)
+        public async Task<Guid> CreateInvoice([FromBody] CreateInvoiceRequest request)
         {
-            await _invoiceService.CreateInvoice(request);
+            return await _invoiceService.CreateInvoice(request);
         }
 
         [HttpPost("send/{invoiceId}")]

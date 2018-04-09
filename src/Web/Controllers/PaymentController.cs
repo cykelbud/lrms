@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Payment.Core.ApplicationServices;
 using Payment.Requests;
@@ -17,7 +18,7 @@ namespace Web.Controllers
         }
 
         [HttpGet()]
-        public async Task<PaymentDto[]> GetAll()
+        public async Task<IEnumerable<PaymentDto>> GetAll()
         {
             return await _paymentService.GetAll();
         }

@@ -1,13 +1,10 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Employee.Core.ApplicationServices;
-using Employee.Core.DomainModel;
 using EventFlow.Core;
 using EventFlow.MsSql;
 using EventFlow.MsSql.ReadStores;
 using EventFlow.Queries;
-using Invoice.Core.DomainModel;
 using Payout.Core.ApplicationServices;
 using Payout.Response;
 using Web.Projections;
@@ -17,22 +14,20 @@ namespace Web.QueryHandlers
 
     public class GetPayoutQueryHandler : IQueryHandler<GetPayoutQuery, PayoutDto>
     {
-        private readonly IMsSqlConnection _msSqlConnection;
+        private readonly IMssqlReadModelStore<PayoutReadModel> _readStore;
 
-        public GetPayoutQueryHandler(IMsSqlConnection msSqlConnection)
+        public GetPayoutQueryHandler(IMssqlReadModelStore<PayoutReadModel> readStore)
         {
-            _msSqlConnection = msSqlConnection;
+            _readStore = readStore;
         }
 
         public async Task<PayoutDto> ExecuteQueryAsync(GetPayoutQuery query, CancellationToken cancellationToken)
         {
-            var readModels = await _msSqlConnection.QueryAsync<PayoutReadModel>(
-                    Label.Named(nameof(GetPayoutQueryHandler)),
-                    cancellationToken,
-                    "SELECT * FROM [ReadModel-Payout]")
-                .ConfigureAwait(false);
-            return readModels.Where(payout => payout.AggregateId == query.Id.ToString("D")).Select(rm => rm.ToPayoutDto()).SingleOrDefault();
+            var invoiceId = query.PayoutId.ToString("D");
+            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            return readModel.ReadModel.ToPayoutDto();
         }
+
     }
 
     public class GetAllPayoutsQueryHandler : IQueryHandler<GetAllPayoutQuery, PayoutDto[]>
@@ -68,8 +63,8 @@ namespace Web.QueryHandlers
         {
             var h = new GetAllPayoutsQueryHandler(_msSqlConnection);
             var allDtos = await h.ExecuteQueryAsync(new GetAllPayoutQuery(), cancellationToken);
-            var Payout = allDtos.SingleOrDefault(p => p.InvoiceId == query.InvoiceId);
-            return Payout;
+            var payout = allDtos.SingleOrDefault(p => p.InvoiceId == query.InvoiceId);
+            return payout;
         }
     }
 
@@ -85,7 +80,7 @@ namespace Web.QueryHandlers
 
         public async Task<PayoutEmployeeDto> ExecuteQueryAsync(GetPayoutEmployeeQuery query, CancellationToken cancellationToken)
         {
-            var employeeId = EmployeeId.With(query.EmployeeId).Value;
+            var employeeId = query.EmployeeId.ToString("D");
             var readModel = await _readStore.GetAsync(employeeId, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToPayoutEmployeeDto();
         }
@@ -102,7 +97,7 @@ namespace Web.QueryHandlers
 
         public async Task<PayoutInvoiceDto> ExecuteQueryAsync(GetPayoutInvoiceQuery query, CancellationToken cancellationToken)
         {
-            var invoiceId = InvoiceId.With(query.InvoiceId).Value;
+            var invoiceId = query.InvoiceId.ToString("D");
             var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToPayoutInvoiceDto();
         }

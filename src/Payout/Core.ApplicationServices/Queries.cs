@@ -10,11 +10,11 @@ namespace Payout.Core.ApplicationServices
 
     public class GetPayoutQuery : IQuery<PayoutDto>
     {
-        public Guid Id { get; }
+        public Guid PayoutId { get; }
 
-        public GetPayoutQuery(Guid id)
+        public GetPayoutQuery(Guid payoutId)
         {
-            Id = id;
+            PayoutId = payoutId;
         }
     }
 

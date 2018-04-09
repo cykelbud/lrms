@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Customer.Requests;
 using Employee.Core.DomainModel;
 using Employee.Response;
 using EventFlow.Aggregates;

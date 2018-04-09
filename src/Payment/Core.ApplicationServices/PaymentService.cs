@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using EventFlow;
@@ -25,7 +26,7 @@ namespace Payment.Core.ApplicationServices
             await _commandBus.PublishAsync(new ReceivePaymentCommand(PaymentId.With(payment.PaymentId), payment.InvoiceId), CancellationToken.None);
         }
 
-        public async Task<PaymentDto[]> GetAll()
+        public async Task<IEnumerable<PaymentDto>> GetAll()
         {
             return await _queryProcessor.ProcessAsync(new GetAllPaymentsQuery(), CancellationToken.None);
         }

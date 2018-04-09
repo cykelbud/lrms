@@ -1,20 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using EventFlow.Queries;
 using Payment.Response;
 
 namespace Payment.Core.ApplicationServices
 {
-    public class GetAllPaymentsQuery : IQuery<PaymentDto[]>
+    public class GetAllPaymentsQuery : IQuery<IEnumerable<PaymentDto>>
     {
     }
 
     public class GetPaymentQuery : IQuery<PaymentDto>
     {
-        public Guid Id { get; }
+        public Guid PaymentId { get; }
 
-        public GetPaymentQuery(Guid id)
+        public GetPaymentQuery(Guid paymentId)
         {
-            Id = id;
+            PaymentId = paymentId;
         }
     }
 
