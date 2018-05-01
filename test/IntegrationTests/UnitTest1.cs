@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Employee.Requests;
-using EventFlow.MsSql;
-using EventFlow.MsSql.EventStores;
 using Invoice.Requests;
 using Microsoft.Extensions.DependencyInjection;
+using Payment.Requests;
 using Web.Configuration;
 using Web.Controllers;
 using Xunit;
@@ -23,6 +22,7 @@ namespace IntegrationTests
         private readonly EmployeeController _employeeController;
         private readonly CustomerController _customerController;
         private readonly PaymentController _paymentController;
+        private readonly PayoutController _payoutController;
 
         public UnitTest1()
         {
@@ -35,12 +35,12 @@ namespace IntegrationTests
 
             _autofacContainer = services.AddAutofacContainer();
             _serviceProvider = new AutofacServiceProvider(_autofacContainer);
-
-
+            
             _invoiceController = _serviceProvider.GetService<InvoiceController>();
             _employeeController = _serviceProvider.GetService<EmployeeController>();
             _customerController = _serviceProvider.GetService<CustomerController>();
             _paymentController = _serviceProvider.GetService<PaymentController>();
+            _payoutController = _serviceProvider.GetService<PayoutController>();
         }
 
 
@@ -81,6 +81,12 @@ namespace IntegrationTests
 
             var payments = await _paymentController.GetAll();
 
+            // simulate payment
+            await _paymentController.SimulateReceivePayment(new ReceivePaymentRequest() {InvoiceId = invoiceId});
+
+            var payouts = await _payoutController.GetAll();
+
+
         }
 
         public void Dispose()
@@ -89,6 +95,7 @@ namespace IntegrationTests
             _employeeController?.Dispose();
             _autofacContainer?.Dispose();
             _paymentController?.Dispose();
+            _payoutController?.Dispose();
         }
     }
 

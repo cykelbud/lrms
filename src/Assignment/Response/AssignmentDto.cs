@@ -6,5 +6,13 @@ namespace Assignment.Response
     {
         public Guid AssignmentId { get; set; }
         public Guid InvoiceId { get; set; }
+        public Status CurrentStatus { get; set; }
+    }
+
+    public enum Status
+    {
+        Created,
+        WaitingForPaymentFromCustomer,
+        Closed
     }
 }

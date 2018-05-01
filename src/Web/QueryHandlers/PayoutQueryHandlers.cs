@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventFlow.Core;
@@ -35,7 +36,7 @@ namespace Web.QueryHandlers
 
     }
 
-    public class GetAllPayoutsQueryHandler : IQueryHandler<GetAllPayoutQuery, PayoutDto[]>
+    public class GetAllPayoutsQueryHandler : IQueryHandler<GetAllPayoutQuery, IEnumerable<PayoutDto>>
     {
         private readonly IMsSqlConnection _msSqlConnection;
 
@@ -44,7 +45,7 @@ namespace Web.QueryHandlers
             _msSqlConnection = msSqlConnection;
         }
 
-        public async Task<PayoutDto[]> ExecuteQueryAsync(GetAllPayoutQuery query, CancellationToken cancellationToken)
+        public async Task<IEnumerable<PayoutDto>> ExecuteQueryAsync(GetAllPayoutQuery query, CancellationToken cancellationToken)
         {
             var readModels = await _msSqlConnection.QueryAsync<PayoutReadModel>(
                         Label.Named(nameof(GetAllInvoicesQueryHandler)),
@@ -67,7 +68,7 @@ namespace Web.QueryHandlers
         public async Task<PayoutDto> ExecuteQueryAsync(GetPayoutByInvoiceIdQuery query, CancellationToken cancellationToken)
         {
             var h = new GetAllPayoutsQueryHandler(_msSqlConnection);
-            var allDtos = await h.ExecuteQueryAsync(new GetAllPayoutQuery(), cancellationToken);
+            var allDtos = await h.ExecuteQueryAsync(new GetAllPayoutQuery(), cancellationToken).ConfigureAwait(false);
             var payout = allDtos.SingleOrDefault(p => p.InvoiceId == query.InvoiceId);
             return payout;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using EventFlow;
@@ -21,9 +22,9 @@ namespace Payout.Core.ApplicationServices
         }
      
 
-        public async Task<PayoutDto[]> GetAll()
+        public async Task<IEnumerable<PayoutDto>> GetAll()
         {
-            return await _queryProcessor.ProcessAsync(new GetAllPayoutQuery(), CancellationToken.None);
+            return await _queryProcessor.ProcessAsync(new GetAllPayoutQuery(), CancellationToken.None).ConfigureAwait(false);
         }
 
 

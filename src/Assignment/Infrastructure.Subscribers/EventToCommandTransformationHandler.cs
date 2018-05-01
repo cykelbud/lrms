@@ -17,7 +17,7 @@ using Payout.Requests;
 
 namespace Assignment.Infrastructure.Subscribers
 {
-    public class AssignmentEventToCommandTransformationHandler : ISubscribeSynchronousToAll
+    public class EventToCommandTransformationHandler : ISubscribeSynchronousToAll
     {
         private readonly IAssignmentService _assignmentService;
         private readonly IQueryProcessor _queryProcessor;
@@ -26,7 +26,7 @@ namespace Assignment.Infrastructure.Subscribers
         private readonly IEmployeeService _employeeService;
         private readonly IInvoiceService _invoiceService;
 
-        public AssignmentEventToCommandTransformationHandler(
+        public EventToCommandTransformationHandler(
             IAssignmentService assignmentService, 
             IQueryProcessor queryProcessor,
             IPaymentService paymentService,
@@ -51,7 +51,6 @@ namespace Assignment.Infrastructure.Subscribers
             if (domainEvent.EventType.FullName == "Invoice.Core.DomainModel.InvoiceCreatedEvent")
             {
                 // Initiate process for this invoice
-                dynamic invoiceCreated = domainEvent.GetAggregateEvent();
                 var id = domainEvent.GetIdentity();
                 Guid invoiceId = Guid.Parse(id.Value.Replace("invoice-", ""));
                 await _assignmentService.CreateAssignment(new CreateAssignmentCommand(AssignmentId.New, invoiceId));
@@ -60,9 +59,9 @@ namespace Assignment.Infrastructure.Subscribers
             {
                 // vanlig employee
                 // skicka till payment??
-                dynamic invoiceCreated = domainEvent.GetAggregateEvent();
-                Guid invoiceId = invoiceCreated.InvoiceId;
-                var assignment = await _queryProcessor.ProcessAsync(new GetAssignmentForInvoiceQuery(invoiceId), CancellationToken.None);
+                var id = domainEvent.GetIdentity();
+                Guid invoiceId = Guid.Parse(id.Value.Replace("invoice-", ""));
+                var assignment = await _queryProcessor.ProcessAsync(new GetAssignmentByInvoiceIdQuery(invoiceId), CancellationToken.None);
                 await _assignmentService.SetWaitingForPayment(new WaitForPaymentCommand(AssignmentId.With(assignment.AssignmentId), assignment.InvoiceId));
                 await _paymentService.SetWaitingForPayment(new WaitingForPaymentRequest(){InvoiceId = invoiceId});
             }
@@ -73,13 +72,13 @@ namespace Assignment.Infrastructure.Subscribers
                 // betalning mottagen, för vanlig employee, betala lön
                 var request = new PayEmployeeRequest {InvoiceId = invoiceId};
                 await _payoutService.PayEmployee(request);
-            //}
-            //if (domainEvent.EventType.FullName == "Payout.Core.DomainModel.EmployeePaidEvent")
-            //{
+            }
+            if (domainEvent.EventType.FullName == "Payout.Core.DomainModel.EmployeePaidEvent")
+            {
                 // close assignment
-                //dynamic employeePaid = domainEvent.GetAggregateEvent();
-               // Guid invoiceId = employeePaid.InvoiceId;
-                var assignment = await _queryProcessor.ProcessAsync(new GetAssignmentForInvoiceQuery(invoiceId), CancellationToken.None);
+                dynamic employeePaid = domainEvent.GetAggregateEvent();
+                Guid invoiceId = employeePaid.InvoiceId;
+                var assignment = await _queryProcessor.ProcessAsync(new GetAssignmentByInvoiceIdQuery(invoiceId), CancellationToken.None);
                 await _assignmentService.CloseAssignment(new CloseAssignmentCommand(AssignmentId.With(assignment.AssignmentId)));
             }
 

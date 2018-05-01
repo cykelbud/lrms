@@ -49,5 +49,24 @@ namespace Web.QueryHandlers
             return readModels.Select(rm => rm.ToAssignmentDto()).ToArray();
         }
     }
-    
+
+    //GetAssignmentForInvoiceQuery
+    public class GetAssignmentForInvoiceQueryHandler : IQueryHandler<GetAssignmentByInvoiceIdQuery, AssignmentDto>
+    {
+        private readonly IMsSqlConnection _msSqlConnection;
+
+        public GetAssignmentForInvoiceQueryHandler(IMsSqlConnection msSqlConnection)
+        {
+            _msSqlConnection = msSqlConnection;
+        }
+
+        public async Task<AssignmentDto> ExecuteQueryAsync(GetAssignmentByInvoiceIdQuery query, CancellationToken cancellationToken)
+        {
+            var h = new GetAllAssignmentsQueryHandler(_msSqlConnection);
+            var allDtos = await h.ExecuteQueryAsync(new GetAllAssignmentsQuery(), cancellationToken);
+            var payment = allDtos.SingleOrDefault(p => p.InvoiceId == query.InvoiceId);
+            return payment;
+        }
+    }
+
 }

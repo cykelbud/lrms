@@ -11,6 +11,7 @@ namespace Web.Projections
     [Table("ReadModel-Assignment")]
     public class AssignmentReadModel : IReadModel,
         IAmReadModelFor<AssignmentAggregate, AssignmentId, AssignmentCreatedEvent>,
+        IAmReadModelFor<AssignmentAggregate, AssignmentId, AssignmentClosedEvent>,
         IAmReadModelFor<AssignmentAggregate, AssignmentId, WaitingForPaymentEvent>
     {
         [MsSqlReadModelIdentityColumn]
@@ -31,7 +32,8 @@ namespace Web.Projections
             var assignment = new AssignmentDto()
             {
                 AssignmentId = domainEvent.AggregateIdentity.GetGuid(),
-                InvoiceId = e.InvoiceId
+                InvoiceId = e.InvoiceId,
+                CurrentStatus = Status.Created
             };
 
             Json = JsonConvert.SerializeObject(assignment);
@@ -40,6 +42,16 @@ namespace Web.Projections
 
         public void Apply(IReadModelContext context, IDomainEvent<AssignmentAggregate, AssignmentId, WaitingForPaymentEvent> domainEvent)
         {
+            var dto = JsonConvert.DeserializeObject<AssignmentDto>(Json);
+            dto.CurrentStatus = Status.WaitingForPaymentFromCustomer;
+            Json = JsonConvert.SerializeObject(dto);
+        }
+
+        public void Apply(IReadModelContext context, IDomainEvent<AssignmentAggregate, AssignmentId, AssignmentClosedEvent> domainEvent)
+        {
+            var dto = JsonConvert.DeserializeObject<AssignmentDto>(Json);
+            dto.CurrentStatus = Status.Closed;
+            Json = JsonConvert.SerializeObject(dto);
         }
     }
 }

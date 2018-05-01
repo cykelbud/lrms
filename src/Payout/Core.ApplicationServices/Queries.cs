@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using EventFlow.Queries;
 using Payout.Response;
 
 namespace Payout.Core.ApplicationServices
 {
-    public class GetAllPayoutQuery : IQuery<PayoutDto[]>
+    public class GetAllPayoutQuery : IQuery<IEnumerable<PayoutDto>>
     {
     }
 

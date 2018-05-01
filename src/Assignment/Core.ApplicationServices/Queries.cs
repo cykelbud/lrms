@@ -18,11 +18,11 @@ namespace Assignment.Core.ApplicationServices
         }
     }
 
-    public class GetAssignmentForInvoiceQuery : IQuery<AssignmentDto>
+    public class GetAssignmentByInvoiceIdQuery : IQuery<AssignmentDto>
     {
         public Guid InvoiceId { get; }
 
-        public GetAssignmentForInvoiceQuery(Guid invoiceId)
+        public GetAssignmentByInvoiceIdQuery(Guid invoiceId)
         {
             InvoiceId = invoiceId;
         }
