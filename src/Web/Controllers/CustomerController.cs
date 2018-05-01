@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Customer.Core.ApplicationServices;
-using Customer.Requests;
+using Employee.Core.ApplicationServices;
+using Employee.Requests;
+using Employee.Response;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers

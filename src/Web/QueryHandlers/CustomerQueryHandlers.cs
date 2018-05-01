@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Customer.Core.DomainServices;
-using Customer.Requests;
+using Employee.Core.DomainServices;
+using Employee.Response;
 using EventFlow.Core;
 using EventFlow.MsSql;
 using EventFlow.Queries;

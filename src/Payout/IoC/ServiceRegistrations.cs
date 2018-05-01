@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Payout.Core.ApplicationServices;
 
-namespace Payout.Registrations
+namespace Payout.IoC
 {
     public static class ServiceRegistrations
     {

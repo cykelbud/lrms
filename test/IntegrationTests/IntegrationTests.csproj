@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Assignment\Assignment.csproj" />
-    <ProjectReference Include="..\..\src\Customer\Customer.csproj" />
     <ProjectReference Include="..\..\src\Employee\Employee.csproj" />
     <ProjectReference Include="..\..\src\Invoice\Invoice.csproj" />
     <ProjectReference Include="..\..\src\Payment\Payment.csproj" />

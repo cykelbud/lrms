@@ -1,7 +1,7 @@
 ﻿using Invoice.Core.ApplicationServices;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Invoice.Registrations
+namespace Invoice.IoC
 {
     public static class ServiceRegistrations
     {

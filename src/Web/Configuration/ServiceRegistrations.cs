@@ -1,20 +1,19 @@
 ﻿using System.IO;
 using System.Reflection;
-using Assignment.Registrations;
+using Assignment.IoC;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Customer.Registrations;
-using Employee.Registrations;
+using Employee.IoC;
 using EventFlow;
 using EventFlow.Autofac.Extensions;
 using EventFlow.Extensions;
 using EventFlow.MsSql;
 using EventFlow.MsSql.Extensions;
-using Invoice.Registrations;
+using Invoice.IoC;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Payment.Registrations;
-using Payout.Registrations;
+using Payment.IoC;
+using Payout.IoC;
 using Web.Projections;
 
 namespace Web.Configuration
@@ -23,12 +22,11 @@ namespace Web.Configuration
     {
 
         public static Assembly WebAssembly { get; } = typeof(Startup).Assembly;
-        public static Assembly AssignmentsAssembly { get; } = typeof(Assignment.Registrations.ServiceRegistrations).Assembly;
-        public static Assembly CustomerAssembly { get; } = typeof(Customer.Registrations.ServiceRegistrations).Assembly;
-        public static Assembly EmployeeAssembly { get; } = typeof(Employee.Registrations.ServiceRegistrations).Assembly;
-        public static Assembly InvoiceAssembly { get; } = typeof(Invoice.Registrations.ServiceRegistrations).Assembly;
-        public static Assembly PaymentAssembly { get; } = typeof(Payment.Registrations.ServiceRegistrations).Assembly;
-        public static Assembly PayoutAssembly { get; } = typeof(Payout.Registrations.ServiceRegistrations).Assembly;
+        public static Assembly AssignmentsAssembly { get; } = typeof(Assignment.IoC.ServiceRegistrations).Assembly;
+        public static Assembly EmployeeAssembly { get; } = typeof(Employee.IoC.ServiceRegistrations).Assembly;
+        public static Assembly InvoiceAssembly { get; } = typeof(Invoice.IoC.ServiceRegistrations).Assembly;
+        public static Assembly PaymentAssembly { get; } = typeof(Payment.IoC.ServiceRegistrations).Assembly;
+        public static Assembly PayoutAssembly { get; } = typeof(Payout.IoC.ServiceRegistrations).Assembly;
 
         //public static IServiceCollection AddMappings(this IServiceCollection services)
         //{
@@ -57,7 +55,6 @@ namespace Web.Configuration
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddAssignmentRegistrations();
-            services.AddCustomerRegistrations();
             services.AddEmplyeeRegistrations();
             services.AddInvoiceRegistrations();
             services.AddPaymentRegistrations();
@@ -77,7 +74,6 @@ namespace Web.Configuration
                 .UseAutofacContainerBuilder(builder) // Must be the first line!
                 .AddDefaults(WebAssembly)
                 .AddDefaults(AssignmentsAssembly)
-                .AddDefaults(CustomerAssembly)
                 .AddDefaults(EmployeeAssembly)
                 .AddDefaults(InvoiceAssembly)
                 .AddDefaults(PaymentAssembly)

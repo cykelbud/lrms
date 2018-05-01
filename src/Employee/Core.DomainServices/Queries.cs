@@ -2,8 +2,9 @@
 using Employee.Response;
 using EventFlow.Queries;
 
-namespace Employee.Core.ApplicationServices
+namespace Employee.Core.DomainServices
 {
+
     public class GetAllEmployeesQuery : IQuery<EmployeeDto[]>
     {
     }
@@ -18,5 +19,17 @@ namespace Employee.Core.ApplicationServices
         }
     }
 
+    public class GetAllCustomersQuery : IQuery<CustomerDto[]>
+    {
+    }
 
+    public class GetCustomerQuery : IQuery<CustomerDto>
+    {
+        public Guid Id { get; }
+
+        public GetCustomerQuery(Guid id)
+        {
+            Id = id;
+        }
+    }
 }

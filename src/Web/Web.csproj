@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net471</TargetFramework>
+    <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Assignment\Assignment.csproj" />
-    <ProjectReference Include="..\Customer\Customer.csproj" />
     <ProjectReference Include="..\Employee\Employee.csproj" />
     <ProjectReference Include="..\Invoice\Invoice.csproj" />
     <ProjectReference Include="..\Payment\Payment.csproj" />

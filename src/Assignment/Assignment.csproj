@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Customer\Customer.csproj" />
     <ProjectReference Include="..\Employee\Employee.csproj" />
     <ProjectReference Include="..\Invoice\Invoice.csproj" />
     <ProjectReference Include="..\Payment\Payment.csproj" />

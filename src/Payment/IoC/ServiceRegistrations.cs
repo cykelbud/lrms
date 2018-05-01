@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Payment.Core.ApplicationServices;
 
-namespace Payment.Registrations
+namespace Payment.IoC
 {
     public static class ServiceRegistrations
     {

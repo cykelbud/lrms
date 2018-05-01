@@ -1,7 +1,7 @@
 ﻿using Assignment.Core.ApplicationServices;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Assignment.Registrations
+namespace Assignment.IoC
 {
     public static class ServiceRegistrations
     {

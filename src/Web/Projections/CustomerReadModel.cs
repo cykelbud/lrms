@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Customer.Requests;
-using Customer.Core.DomainModel;
+using Employee.Core.DomainModel;
+using Employee.Response;
 using EventFlow.Aggregates;
 using EventFlow.MsSql.ReadStores.Attributes;
 using EventFlow.ReadStores;
