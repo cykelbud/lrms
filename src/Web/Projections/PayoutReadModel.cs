@@ -12,14 +12,8 @@ namespace Web.Projections
     public class PayoutReadModel : IReadModel,
         IAmReadModelFor<PayoutAggregate, PayoutId, EmployeePaidEvent>
     {
-        public PayoutReadModel()
-        {
-            
-        }
-
         [MsSqlReadModelIdentityColumn]
         public string AggregateId { get; set; }
-
         public string Json { get; set; }
 
         public PayoutDto ToPayoutDto()
@@ -30,7 +24,7 @@ namespace Web.Projections
 
         public void Apply(IReadModelContext context, IDomainEvent<PayoutAggregate, PayoutId, EmployeePaidEvent> domainEvent)
         {
-            AggregateId = domainEvent.AggregateIdentity.GetGuid().ToString("D");
+            AggregateId = domainEvent.AggregateIdentity.Value;
             var e = domainEvent.AggregateEvent;
             var payout = new PayoutDto()
             {

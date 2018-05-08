@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Employee.Core.DomainModel;
 using EventFlow.Core;
 using EventFlow.MsSql;
 using EventFlow.MsSql.ReadStores;
 using EventFlow.Queries;
+using Invoice.Core.DomainModel;
 using Invoice.Core.DomainServices;
 using Invoice.Response;
 using Web.Projections;
@@ -23,7 +25,7 @@ namespace Web.QueryHandlers
 
         public async Task<InvoiceDto> ExecuteQueryAsync(GetInvoiceQuery query, CancellationToken cancellationToken)
         {
-            var invoiceId = query.InvoiceId.ToString("D");
+            var invoiceId = InvoiceId.With(query.InvoiceId).Value;
             var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToInvoiceDto();
         }
@@ -60,8 +62,8 @@ namespace Web.QueryHandlers
 
         public async Task<InvoiceCustomerDto> ExecuteQueryAsync(GetInvoiceCustomerQuery query, CancellationToken cancellationToken)
         {
-            var invoiceId = query.CustomerId.ToString("D");
-            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            var customerId = CustomerId.With(query.CustomerId).Value;
+            var readModel = await _readStore.GetAsync(customerId, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToInvoiceCustomerDto();
         }
     }
@@ -77,8 +79,8 @@ namespace Web.QueryHandlers
 
         public async Task<InvoiceEmployeeDto> ExecuteQueryAsync(GetInvoiceEmployeeQuery query, CancellationToken cancellationToken)
         {
-            var invoiceId = query.EmployeeId.ToString("D");
-            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            var employeeId = EmployeeId.With(query.EmployeeId).Value;
+            var readModel = await _readStore.GetAsync(employeeId, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToInvoiceEmployeeDto();
         }
     }

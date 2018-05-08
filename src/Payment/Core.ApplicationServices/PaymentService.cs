@@ -10,7 +10,7 @@ using Payment.Response;
 
 namespace Payment.Core.ApplicationServices
 {
-    class PaymentService : IPaymentService
+    internal class PaymentService : IPaymentService
     {
         private readonly ICommandBus _commandBus;
         private readonly IQueryProcessor _queryProcessor;
@@ -20,26 +20,36 @@ namespace Payment.Core.ApplicationServices
             _commandBus = commandBus;
             _queryProcessor = queryProcessor;
         }
-        public async Task ReceivePayment(ReceivePaymentRequest request)
-        {
-            var payment = await _queryProcessor.ProcessAsync(new GetPaymentByInvoiceIdQuery(request.InvoiceId), CancellationToken.None);
-            await _commandBus.PublishAsync(new ReceivePaymentCommand(PaymentId.With(payment.PaymentId), payment.InvoiceId), CancellationToken.None);
-        }
 
         public async Task<IEnumerable<PaymentDto>> GetAll()
         {
             return await _queryProcessor.ProcessAsync(new GetAllPaymentsQuery(), CancellationToken.None);
         }
 
-        public async Task PaymentDue(PaymentDueRequest request)
+        public async Task SimulateReceivePayment(ReceivePaymentRequest request)
         {
-            //_commandBus.PublishAsync(new PaymenrDueCommand(), CancellationToken.None);
+            var payment = await _queryProcessor.ProcessAsync(new GetPaymentByInvoiceIdQuery(request.InvoiceId), CancellationToken.None);
+            if (payment == null)
+            {
+                throw new ArgumentException($"No payment found for invoice {request.InvoiceId}");
+            }
+            await _commandBus.PublishAsync(new ReceivePaymentCommand(PaymentId.With(payment.PaymentId), payment.InvoiceId), CancellationToken.None);
+        }
+
+        public async Task SimulatePaymentDue(PaymentDueRequest request)
+        {
+            var payment = await _queryProcessor.ProcessAsync(new GetPaymentByInvoiceIdQuery(request.InvoiceId), CancellationToken.None);
+            if (payment == null)
+            {
+                throw new ArgumentException($"No payment found for invoice {request.InvoiceId}");
+            }
+            await _commandBus.PublishAsync(new PaymentDueCommand(PaymentId.With(payment.PaymentId), payment.InvoiceId), CancellationToken.None);
         }
 
         public async Task SetWaitingForPayment(WaitingForPaymentRequest request)
         {
-            await _commandBus.PublishAsync(new WaitForPaymentCommand(PaymentId.New, request.InvoiceId),
-                CancellationToken.None);
+            // creates a new payment
+            await _commandBus.PublishAsync(new WaitForPaymentCommand(PaymentId.New, request.InvoiceId), CancellationToken.None);
         }
     }
 

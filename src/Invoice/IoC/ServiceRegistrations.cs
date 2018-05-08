@@ -7,8 +7,8 @@ namespace Invoice.IoC
     {
         public static IServiceCollection AddInvoiceRegistrations(this IServiceCollection services)
         {
-            services.AddSingleton<IInvoiceService, InvoiceService>();
-            services.AddSingleton<IInvoicePrinter, InvoicePrinter>();
+            services.AddTransient<IInvoiceService, InvoiceService>();
+            services.AddTransient<IInvoicePrinter, InvoicePrinter>();
 
             return services;
         }

@@ -37,7 +37,7 @@ namespace Web.Projections
 
         public void Apply(IReadModelContext context, IDomainEvent<CustomerAggregate, CustomerId, CustomerCreatedEvent> domainEvent)
         {
-            AggregateId = domainEvent.AggregateIdentity.GetGuid().ToString("D");
+            AggregateId = domainEvent.AggregateIdentity.Value;
 
             var customer = new CustomerDto()
             {

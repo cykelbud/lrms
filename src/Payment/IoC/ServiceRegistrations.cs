@@ -7,7 +7,7 @@ namespace Payment.IoC
     {
         public static IServiceCollection AddPaymentRegistrations(this IServiceCollection services)
         {
-            services.AddSingleton<IPaymentService, PaymentService>();
+            services.AddTransient<IPaymentService, PaymentService>();
 
             return services;
         }

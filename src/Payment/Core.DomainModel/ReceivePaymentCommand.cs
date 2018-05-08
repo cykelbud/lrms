@@ -23,4 +23,26 @@ namespace Payment.Core.DomainModel
             return Task.CompletedTask;
         }
     }
+
+    //PaymentDueCommand
+
+    public class PaymentDueCommand : Command<PaymentAggregate, PaymentId>
+    {
+        public Guid InvoiceId { get; }
+
+        public PaymentDueCommand(PaymentId aggregateId, Guid invoiceId) : base(aggregateId)
+        {
+            InvoiceId = invoiceId;
+        }
+    }
+
+    public class PaymentDueCommandHandler : CommandHandler<PaymentAggregate, PaymentId, PaymentDueCommand>
+    {
+        public override Task ExecuteAsync(PaymentAggregate aggregate, PaymentDueCommand command, CancellationToken cancellationToken)
+        {
+            aggregate.PaymentDue(command);
+            return Task.CompletedTask;
+        }
+    }
+
 }

@@ -2,11 +2,14 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Employee.Core.DomainModel;
 using EventFlow.Core;
 using EventFlow.MsSql;
 using EventFlow.MsSql.ReadStores;
 using EventFlow.Queries;
+using Invoice.Core.DomainModel;
 using Payout.Core.ApplicationServices;
+using Payout.Core.DomainModel;
 using Payout.Response;
 using Web.Projections;
 
@@ -15,11 +18,6 @@ namespace Web.QueryHandlers
 
     public class GetPayoutQueryHandler : IQueryHandler<GetPayoutQuery, PayoutDto>
     {
-        public GetPayoutQueryHandler()
-        {
-            
-        }
-
         private readonly IMssqlReadModelStore<PayoutReadModel> _readStore;
 
         public GetPayoutQueryHandler(IMssqlReadModelStore<PayoutReadModel> readStore)
@@ -29,8 +27,8 @@ namespace Web.QueryHandlers
 
         public async Task<PayoutDto> ExecuteQueryAsync(GetPayoutQuery query, CancellationToken cancellationToken)
         {
-            var invoiceId = query.PayoutId.ToString("D");
-            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            var payoutId = PayoutId.With(query.PayoutId).Value;
+            var readModel = await _readStore.GetAsync(payoutId, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToPayoutDto();
         }
 
@@ -86,7 +84,7 @@ namespace Web.QueryHandlers
 
         public async Task<PayoutEmployeeDto> ExecuteQueryAsync(GetPayoutEmployeeQuery query, CancellationToken cancellationToken)
         {
-            var employeeId = query.EmployeeId.ToString("D");
+            var employeeId = EmployeeId.With(query.EmployeeId).Value;
             var readModel = await _readStore.GetAsync(employeeId, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToPayoutEmployeeDto();
         }
@@ -103,7 +101,7 @@ namespace Web.QueryHandlers
 
         public async Task<PayoutInvoiceDto> ExecuteQueryAsync(GetPayoutInvoiceQuery query, CancellationToken cancellationToken)
         {
-            var invoiceId = query.InvoiceId.ToString("D");
+            var invoiceId = InvoiceId.With(query.InvoiceId).Value;
             var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToPayoutInvoiceDto();
         }

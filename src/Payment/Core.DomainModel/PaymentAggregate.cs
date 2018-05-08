@@ -5,7 +5,8 @@ namespace Payment.Core.DomainModel
 {
     public class PaymentAggregate : AggregateRoot<PaymentAggregate, PaymentId>,
         IApply<WaitingForPaymentEvent>,
-        IApply<PaymentReceivedEvent>
+        IApply<PaymentReceivedEvent>,
+        IApply<PaymentDueEvent>
     {
         // state
         public Guid InvoiceId { get; set; }
@@ -38,6 +39,16 @@ namespace Payment.Core.DomainModel
             CurrentState = State.PaymentReceived;
         }
 
+
+        public void PaymentDue(PaymentDueCommand command)
+        {
+            Emit(new PaymentDueEvent(command.InvoiceId));
+        }
+
+        public void Apply(PaymentDueEvent aggregateEvent)
+        {
+            CurrentState = State.PaymentDue;
+        }
     }
 
     public enum State

@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Assignment.Core.DomainModel;
-using Assignment.Infrastructure.Subscribers;
 using Assignment.Response;
 
 namespace Assignment.Core.ApplicationServices

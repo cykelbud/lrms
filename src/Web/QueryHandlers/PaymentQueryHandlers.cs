@@ -7,6 +7,7 @@ using EventFlow.MsSql;
 using EventFlow.MsSql.ReadStores;
 using EventFlow.Queries;
 using Payment.Core.ApplicationServices;
+using Payment.Core.DomainModel;
 using Payment.Response;
 using Web.Projections;
 
@@ -24,8 +25,8 @@ namespace Web.QueryHandlers
 
         public async Task<PaymentDto> ExecuteQueryAsync(GetPaymentQuery query, CancellationToken cancellationToken)
         {
-            var invoiceId = query.PaymentId.ToString("D");
-            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            var paymentId = PaymentId.With(query.PaymentId).Value;
+            var readModel = await _readStore.GetAsync(paymentId, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToPaymentDto();
         }
     }

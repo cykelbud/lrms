@@ -12,11 +12,16 @@ namespace Web.Projections
     public class AssignmentReadModel : IReadModel,
         IAmReadModelFor<AssignmentAggregate, AssignmentId, AssignmentCreatedEvent>,
         IAmReadModelFor<AssignmentAggregate, AssignmentId, AssignmentClosedEvent>,
-        IAmReadModelFor<AssignmentAggregate, AssignmentId, WaitingForPaymentEvent>
+        IAmReadModelFor<AssignmentAggregate, AssignmentId, AssignmentInWaitingForPaymentStateEvent>
     {
+
+        public AssignmentReadModel()
+        {
+            
+        }
+
         [MsSqlReadModelIdentityColumn]
         public string AggregateId { get; set; }
-
         public string Json { get; set; }
 
         public AssignmentDto ToAssignmentDto()
@@ -27,7 +32,7 @@ namespace Web.Projections
 
         public void Apply(IReadModelContext context, IDomainEvent<AssignmentAggregate, AssignmentId, AssignmentCreatedEvent> domainEvent)
         {
-            AggregateId = domainEvent.AggregateIdentity.GetGuid().ToString("D");
+            AggregateId = domainEvent.AggregateIdentity.Value;
             var e = domainEvent.AggregateEvent;
             var assignment = new AssignmentDto()
             {
@@ -40,7 +45,7 @@ namespace Web.Projections
         }
 
 
-        public void Apply(IReadModelContext context, IDomainEvent<AssignmentAggregate, AssignmentId, WaitingForPaymentEvent> domainEvent)
+        public void Apply(IReadModelContext context, IDomainEvent<AssignmentAggregate, AssignmentId, AssignmentInWaitingForPaymentStateEvent> domainEvent)
         {
             var dto = JsonConvert.DeserializeObject<AssignmentDto>(Json);
             dto.CurrentStatus = Status.WaitingForPaymentFromCustomer;

@@ -2,11 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Assignment.Core.ApplicationServices;
+using Assignment.Core.DomainModel;
 using Assignment.Response;
 using EventFlow.Core;
 using EventFlow.MsSql;
 using EventFlow.MsSql.ReadStores;
 using EventFlow.Queries;
+using Invoice.Core.DomainModel;
 using Web.Projections;
 
 namespace Web.QueryHandlers
@@ -23,8 +25,8 @@ namespace Web.QueryHandlers
 
         public async Task<AssignmentDto> ExecuteQueryAsync(GetAssignmentQuery query, CancellationToken cancellationToken)
         {
-            var invoiceId = query.AssignmentId.ToString("D");
-            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            var assignmentId = AssignmentId.With(query.AssignmentId);
+            var readModel = await _readStore.GetAsync(assignmentId.Value, cancellationToken).ConfigureAwait(false);
             return readModel.ReadModel.ToAssignmentDto();
         }
 
@@ -50,7 +52,6 @@ namespace Web.QueryHandlers
         }
     }
 
-    //GetAssignmentForInvoiceQuery
     public class GetAssignmentForInvoiceQueryHandler : IQueryHandler<GetAssignmentByInvoiceIdQuery, AssignmentDto>
     {
         private readonly IMsSqlConnection _msSqlConnection;

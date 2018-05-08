@@ -7,9 +7,9 @@ namespace Payment.Core.ApplicationServices
 {
     public interface IPaymentService
     {
-        Task ReceivePayment(ReceivePaymentRequest request);
+        Task SimulateReceivePayment(ReceivePaymentRequest request);
         Task<IEnumerable<PaymentDto>> GetAll();
-        Task PaymentDue(PaymentDueRequest request);
+        Task SimulatePaymentDue(PaymentDueRequest request);
         Task SetWaitingForPayment(WaitingForPaymentRequest request);
     }
 }

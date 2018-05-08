@@ -5,7 +5,7 @@ namespace Assignment.Core.DomainModel
 {
     public class AssignmentAggregate : AggregateRoot<AssignmentAggregate, AssignmentId>,
         IApply<AssignmentCreatedEvent>,
-        IApply<WaitingForPaymentEvent>,
+        IApply<AssignmentInWaitingForPaymentStateEvent>,
         IApply<AssignmentClosedEvent>
     {
         // state
@@ -30,10 +30,10 @@ namespace Assignment.Core.DomainModel
 
         public void WaitForPayment(WaitForPaymentCommand command)
         {
-            Emit(new WaitingForPaymentEvent(command.InvoiceId));
+            Emit(new AssignmentInWaitingForPaymentStateEvent(command.InvoiceId));
         }
 
-        public void Apply(WaitingForPaymentEvent aggregateEvent)
+        public void Apply(AssignmentInWaitingForPaymentStateEvent aggregateStateEvent)
         {
             CurrentState = State.ProcessingPayment;
         }

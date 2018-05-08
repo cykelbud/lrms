@@ -52,7 +52,7 @@ namespace Web.Projections
 
         public void Apply(IReadModelContext context, IDomainEvent<EmployeeAggregate, EmployeeId, EmployeeCreatedEvent> domainEvent)
         {
-            AggregateId = domainEvent.AggregateIdentity.GetGuid().ToString("D");
+            AggregateId = domainEvent.AggregateIdentity.Value;
 
             var employee = new EmployeeDto()
             {

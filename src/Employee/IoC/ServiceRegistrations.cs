@@ -7,8 +7,8 @@ namespace Employee.IoC
     {
         public static IServiceCollection AddEmplyeeRegistrations(this IServiceCollection services)
         {
-            services.AddSingleton<IEmployeeService, EmployeeService>();
-            services.AddSingleton<ICustomerService, CustomerService>();
+            services.AddTransient<IEmployeeService, EmployeeService>();
+            services.AddTransient<ICustomerService, CustomerService>();
 
             return services;
         }

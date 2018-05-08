@@ -1,12 +1,16 @@
-
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using Assignment.Core.ApplicationServices;
+using Assignment.Core.DomainModel;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Employee.Requests;
+using EventFlow.Queries;
 using Invoice.Requests;
 using Microsoft.Extensions.DependencyInjection;
+using Payment.Core.ApplicationServices;
 using Payment.Requests;
 using Web.Configuration;
 using Web.Controllers;
@@ -23,6 +27,9 @@ namespace IntegrationTests
         private readonly CustomerController _customerController;
         private readonly PaymentController _paymentController;
         private readonly PayoutController _payoutController;
+        private IAssignmentService _assignmentService;
+        private IQueryProcessor _queryProcessor;
+        private IPaymentService _paymentService;
 
         public UnitTest1()
         {
@@ -35,7 +42,11 @@ namespace IntegrationTests
 
             _autofacContainer = services.AddAutofacContainer();
             _serviceProvider = new AutofacServiceProvider(_autofacContainer);
-            
+
+            _queryProcessor = _serviceProvider.GetService<IQueryProcessor>();
+            _assignmentService = _serviceProvider.GetService<IAssignmentService>();
+            _paymentService = _serviceProvider.GetService<IPaymentService>();
+
             _invoiceController = _serviceProvider.GetService<InvoiceController>();
             _employeeController = _serviceProvider.GetService<EmployeeController>();
             _customerController = _serviceProvider.GetService<CustomerController>();
@@ -68,7 +79,7 @@ namespace IntegrationTests
             {
                 EmployeeId   = employeeId,
                 CustomerId = customerId,
-                InvoiceItems = new List<InvoiceItemDto>() { new InvoiceItemDto() {Price = 5.0m, Description = "item"} }.ToArray(),
+                InvoiceItems = new List<InvoiceItemDto>() { new InvoiceItemDto() {Price = 10000.0m, Description = "städning"} }.ToArray(),
                 EndDate = DateTime.Now,
                 StartDate = DateTime.Now,
                 Name = "invoiceName",
@@ -88,6 +99,63 @@ namespace IntegrationTests
 
 
         }
+
+
+        [Fact]
+        public async Task CreateAssignments()
+        {
+            var invoiceId = Guid.NewGuid();
+            var assignmentId = AssignmentId.New;
+            await _assignmentService.CreateAssignment(new CreateAssignmentCommand(assignmentId, invoiceId));
+            var assignment = await _queryProcessor.ProcessAsync(new GetAssignmentByInvoiceIdQuery(invoiceId), CancellationToken.None);
+            Assert.Equal(assignmentId.GetGuid(), assignment.AssignmentId);
+        }
+
+
+        [Fact]
+        public async Task CreateAssignments2()
+        {
+            var invoiceId = Guid.NewGuid();
+            var assignmentId = AssignmentId.New;
+            await _assignmentService.CreateAssignment(new CreateAssignmentCommand(assignmentId, invoiceId));
+            var assignment = await _queryProcessor.ProcessAsync(new GetAssignmentByInvoiceIdQuery(invoiceId), CancellationToken.None).ConfigureAwait(false);
+            Assert.Equal(assignmentId.GetGuid(), assignment.AssignmentId);
+
+            await _assignmentService.SetWaitingForPayment(new WaitForPaymentCommand(AssignmentId.With(assignment.AssignmentId), assignment.InvoiceId)).ConfigureAwait(false);
+           // await _paymentService.SetWaitingForPayment(new WaitingForPaymentRequest() { InvoiceId = invoiceId }).ConfigureAwait(false);
+
+        }
+
+        [Fact]
+        public async Task CreateAssignments3()
+        {
+            var invoiceId = Guid.NewGuid();
+            var assignmentId = AssignmentId.New;
+            await _assignmentService.CreateAssignment(new CreateAssignmentCommand(assignmentId, invoiceId));
+            var assignment = await _queryProcessor.ProcessAsync(new GetAssignmentByInvoiceIdQuery(invoiceId), CancellationToken.None).ConfigureAwait(false);
+            Assert.Equal(assignmentId.GetGuid(), assignment.AssignmentId);
+
+            await _assignmentService.SetWaitingForPayment(new WaitForPaymentCommand(assignmentId, invoiceId)).ConfigureAwait(false);
+        }
+
+
+        [Fact]
+        public async Task CreateAssignments4()
+        {
+            var invoiceId = new Guid("743de7e2-7379-48f0-b113-1f3879bacb80");
+            var assignmentId = AssignmentId.With(new Guid("d8f2b0ea-6676-4afe-ab34-b8c41639d7e9"));
+            await _assignmentService.SetWaitingForPayment(new WaitForPaymentCommand(assignmentId, invoiceId)).ConfigureAwait(false);
+        }
+
+
+
+        [Fact]
+        public async Task WaitForPayment()
+        {
+            var invoiceId = Guid.NewGuid();
+            await _paymentService.SetWaitingForPayment(new WaitingForPaymentRequest() { InvoiceId = invoiceId }).ConfigureAwait(false);
+        }
+
 
         public void Dispose()
         {

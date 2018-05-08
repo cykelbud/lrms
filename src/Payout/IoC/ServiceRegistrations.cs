@@ -7,7 +7,9 @@ namespace Payout.IoC
     {
         public static IServiceCollection AddPayoutRegistrations(this IServiceCollection services)
         {
-            services.AddSingleton<IPayoutService, PayoutService>();
+            services.AddTransient<IPayoutService, PayoutService>();
+            services.AddTransient<IMarginalenBank, MarginalenBank>();
+            services.AddTransient<ISkatteverket, Skatteverket>();
 
             return services;
         }

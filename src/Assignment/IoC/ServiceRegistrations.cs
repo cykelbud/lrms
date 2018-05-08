@@ -7,7 +7,7 @@ namespace Assignment.IoC
     {
         public static IServiceCollection AddAssignmentRegistrations(this IServiceCollection services)
         {
-            services.AddSingleton<IAssignmentService, AssignmentService>();
+            services.AddTransient<IAssignmentService, AssignmentService>();
 
             return services;
         }

@@ -15,7 +15,6 @@ namespace Web.Projections
     {
         [MsSqlReadModelIdentityColumn]
         public string AggregateId { get; set; }
-
         public string Json { get; set; }
 
         public PaymentDto ToPaymentDto()
@@ -26,7 +25,7 @@ namespace Web.Projections
 
         public void Apply(IReadModelContext context, IDomainEvent<PaymentAggregate, PaymentId, WaitingForPaymentEvent> domainEvent)
         {
-            AggregateId = domainEvent.AggregateIdentity.GetGuid().ToString("D");
+            AggregateId = domainEvent.AggregateIdentity.Value;
             var e = domainEvent.AggregateEvent;
             var payment = new PaymentDto()
             {

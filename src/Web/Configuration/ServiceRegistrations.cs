@@ -48,7 +48,6 @@ namespace Web.Configuration
 
             var configuration = builder.Build();
             services.AddOptions();
-            //services.Configure<AMLServiceOptions>(configuration.GetSection("AMLServiceOptions"));
             return services;
         }
 
@@ -79,14 +78,15 @@ namespace Web.Configuration
                 .AddDefaults(PaymentAssembly)
                 .AddDefaults(PayoutAssembly)
 
-                .ConfigureMsSql(MsSqlConfiguration.New.SetConnectionString(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=LrmsDb;Integrated Security=True;"))
-
+                .ConfigureMsSql(MsSqlConfiguration.New.SetConnectionString(@"Data Source=.;Initial Catalog=LrmsDb;Integrated Security=True;"))
                 .UseMssqlEventStore()
+
                 .UseMssqlReadModel<EmployeeReadModel>()
                 .UseMssqlReadModel<CustomerReadModel>()
                 .UseMssqlReadModel<InvoiceReadModel>()
                 .UseMssqlReadModel<AssignmentReadModel>()
                 .UseMssqlReadModel<PaymentReadModel>()
+                .UseMssqlReadModel<PayoutReadModel>()
 
                 .CreateContainer();
 

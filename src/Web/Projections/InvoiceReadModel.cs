@@ -38,7 +38,7 @@ namespace Web.Projections
 
         public void Apply(IReadModelContext context, IDomainEvent<InvoiceAggregate, InvoiceId, InvoiceCreatedEvent> domainEvent)
         {
-            AggregateId = domainEvent.AggregateIdentity.GetGuid().ToString("D");
+            AggregateId = domainEvent.AggregateIdentity.Value;
             var e = domainEvent.AggregateEvent;
             var invoice = new InvoiceDto()
             {

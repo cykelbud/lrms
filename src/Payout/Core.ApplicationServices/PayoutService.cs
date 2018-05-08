@@ -14,40 +14,45 @@ namespace Payout.Core.ApplicationServices
     {
         private readonly ICommandBus _commandBus;
         private readonly IQueryProcessor _queryProcessor;
+        private readonly IMarginalenBank _marginalenBank;
+        private readonly ISkatteverket _skatteverket;
 
-        public PayoutService(ICommandBus commandBus, IQueryProcessor queryProcessor)
+        public PayoutService(ICommandBus commandBus, IQueryProcessor queryProcessor, IMarginalenBank marginalenBank, ISkatteverket skatteverket)
         {
             _commandBus = commandBus;
             _queryProcessor = queryProcessor;
+            _marginalenBank = marginalenBank;
+            _skatteverket = skatteverket;
         }
      
-
         public async Task<IEnumerable<PayoutDto>> GetAll()
         {
             return await _queryProcessor.ProcessAsync(new GetAllPayoutQuery(), CancellationToken.None).ConfigureAwait(false);
         }
-
-
+        
         public async Task PayEmployee(PayEmployeeRequest request)
         {
             // Immediate wage payout to employee, no flow.
-
-            // get employee from invoice
-            var payout = await _queryProcessor.ProcessAsync(new GetPayoutByInvoiceIdQuery(request.InvoiceId), CancellationToken.None);
-            // get bankaccount number from employee
-            var payoutEmployee = await _queryProcessor.ProcessAsync(new GetPayoutEmployeeQuery(payout.EmployeeId), CancellationToken.None);
+            
             // get amount from invoice
             var payoutInvoice = await _queryProcessor.ProcessAsync(new GetPayoutInvoiceQuery(request.InvoiceId), CancellationToken.None);
+            // get bankaccount number from employee
+            var payoutEmployee = await _queryProcessor.ProcessAsync(new GetPayoutEmployeeQuery(payoutInvoice.EmployeeId), CancellationToken.None);
 
             // make payment to lets say a bank
-            var amount = payoutInvoice.Amount * 0.95m; // 5% commission
+            var commission = payoutInvoice.Amount * 0.05m; // 5% commission, bruttolön
+            var afterCommission = payoutInvoice.Amount - commission;
+            var bruttolön = afterCommission / 1.3142m; // 31.42 arbetsgivaravgift 
+            var afterTax = bruttolön * 0.70m; // 30% schablonskatt på egenanställning
+
             var accountNo = payoutEmployee.BankAccountNumber;
-            // Todo
+            var totalTax = afterCommission - afterTax;
+
+            await _marginalenBank.Pay(accountNo, afterTax);
+            await _skatteverket.Pay("ocr", totalTax);
 
             // store this command to raise an event to others
-            await _commandBus.PublishAsync(new PayEmployeeCommand(PayoutId.New, request.InvoiceId, amount, DateTime.Now, payout.EmployeeId),
-                CancellationToken.None);
+            await _commandBus.PublishAsync(new PayEmployeeCommand(PayoutId.New, request.InvoiceId, afterTax, DateTime.Now, payoutInvoice.EmployeeId), CancellationToken.None);
         }
     }
-
 }

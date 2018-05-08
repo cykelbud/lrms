@@ -27,13 +27,13 @@ namespace Web.Controllers
         [HttpPost("")]
         public async Task SimulateReceivePayment([FromBody] ReceivePaymentRequest request)
         {
-            await _paymentService.ReceivePayment(request);
+            await _paymentService.SimulateReceivePayment(request);
         }
 
         [HttpPost("")]
         public async Task SimulatePaymentDue([FromBody] PaymentDueRequest request)
         {
-            await _paymentService.PaymentDue(request);
+            await _paymentService.SimulatePaymentDue(request);
         }
     }
 }
