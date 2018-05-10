@@ -6,7 +6,10 @@ namespace Payment.Core.DomainModel
     public class PaymentAggregate : AggregateRoot<PaymentAggregate, PaymentId>,
         IApply<WaitingForPaymentEvent>,
         IApply<PaymentReceivedEvent>,
-        IApply<PaymentDueEvent>
+        IApply<PaymentDueEvent>,
+        IApply<DebtCollectionEvent>,
+        IApply<PaymentInjunctionEvent>,
+        IApply<DistraintEvent>
     {
         // state
         public Guid InvoiceId { get; set; }
@@ -38,8 +41,7 @@ namespace Payment.Core.DomainModel
             PaymentReceivedDate = aggregateEvent.ReceivedDate;
             CurrentState = State.PaymentReceived;
         }
-
-
+        
         public void PaymentDue(PaymentDueCommand command)
         {
             Emit(new PaymentDueEvent(command.InvoiceId));
@@ -48,6 +50,36 @@ namespace Payment.Core.DomainModel
         public void Apply(PaymentDueEvent aggregateEvent)
         {
             CurrentState = State.PaymentDue;
+        }
+
+        public void DebtCollection(DebtCollectionCommand command)
+        {
+            Emit(new DebtCollectionEvent(command.InvoiceId, DateTime.Now));
+        }
+
+        public void PaymentInjunction(PaymentInjunctionCommand command)
+        {
+            Emit(new PaymentInjunctionEvent(command.InvoiceId, DateTime.Now));
+        }
+
+        public void Distraint(DistraintCommand command)
+        {
+            Emit(new DistraintEvent(command.InvoiceId, DateTime.Now));
+        }
+
+        public void Apply(DebtCollectionEvent aggregateEvent)
+        {
+            CurrentState = State.DebtCollection;
+        }
+
+        public void Apply(PaymentInjunctionEvent aggregateEvent)
+        {
+            CurrentState = State.PaymentInjuction;
+        }
+
+        public void Apply(DistraintEvent aggregateEvent)
+        {
+            CurrentState = State.Distraint;
         }
     }
 

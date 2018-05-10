@@ -9,6 +9,7 @@ namespace Invoice.IoC
         {
             services.AddTransient<IInvoiceService, InvoiceService>();
             services.AddTransient<IInvoicePrinter, InvoicePrinter>();
+            services.AddTransient<ISkatteverketService, SkatteverketService>();
 
             return services;
         }

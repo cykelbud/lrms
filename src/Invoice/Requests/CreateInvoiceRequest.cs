@@ -7,6 +7,8 @@ namespace Invoice.Requests
         public Guid EmployeeId { get; set; }
         public Guid CustomerId { get; set; }
 
+        public bool PayInAdvance { get; set; }
+        public bool HasTaxReduction { get; set; } // RUT / ROT
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string InvoiceDescription { get; set; }

@@ -13,8 +13,11 @@ namespace Invoice.Core.DomainModel
         public string Name { get;  }
         public decimal Vat { get;  }
         public InvoiceItem[] InvoiceItems { get;  }
+        public bool PayInAdvance { get; }
+        public bool HasTaxReduction { get; } // RUT / ROT
 
-        public InvoiceCreatedEvent(Guid employeeId, Guid customerId, DateTime startDate, DateTime endDate, string invoiceDescription, string name, decimal vat, InvoiceItem[] invoiceItems)
+
+        public InvoiceCreatedEvent(Guid employeeId, Guid customerId, DateTime startDate, DateTime endDate, string invoiceDescription, string name, decimal vat, InvoiceItem[] invoiceItems, bool payInAdvance, bool hasTaxReduction)
         {
             EmployeeId = employeeId;
             CustomerId = customerId;
@@ -24,6 +27,8 @@ namespace Invoice.Core.DomainModel
             Name = name;
             Vat = vat;
             InvoiceItems = invoiceItems;
+            PayInAdvance = payInAdvance;
+            HasTaxReduction = hasTaxReduction;
         }
     }
 }

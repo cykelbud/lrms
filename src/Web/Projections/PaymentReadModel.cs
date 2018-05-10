@@ -11,7 +11,11 @@ namespace Web.Projections
     [Table("ReadModel-Payment")]
     public class PaymentReadModel : IReadModel,
         IAmReadModelFor<PaymentAggregate, PaymentId, WaitingForPaymentEvent>,
-        IAmReadModelFor<PaymentAggregate, PaymentId, PaymentReceivedEvent>
+        IAmReadModelFor<PaymentAggregate, PaymentId, PaymentReceivedEvent>,
+        IAmReadModelFor<PaymentAggregate, PaymentId, PaymentDueEvent>,
+        IAmReadModelFor<PaymentAggregate, PaymentId, DebtCollectionEvent>,
+        IAmReadModelFor<PaymentAggregate, PaymentId, PaymentInjunctionEvent>,
+        IAmReadModelFor<PaymentAggregate, PaymentId, DistraintEvent>
     {
         [MsSqlReadModelIdentityColumn]
         public string AggregateId { get; set; }
@@ -31,6 +35,8 @@ namespace Web.Projections
             {
                PaymentId = domainEvent.AggregateIdentity.GetGuid(),
                InvoiceId = e.InvoiceId,
+               PaymentReceivedDate = null,
+               CurrentState = PaymentState.WaitingForPayment
             };
 
             Json = JsonConvert.SerializeObject(payment);
@@ -41,6 +47,35 @@ namespace Web.Projections
         {
             var payment = JsonConvert.DeserializeObject<PaymentDto>(Json);
             payment.PaymentReceivedDate = domainEvent.AggregateEvent.ReceivedDate;
+            payment.CurrentState = PaymentState.PaymentReceived;
+            Json = JsonConvert.SerializeObject(payment);
+        }
+
+        public void Apply(IReadModelContext context, IDomainEvent<PaymentAggregate, PaymentId, PaymentDueEvent> domainEvent)
+        {
+            var payment = JsonConvert.DeserializeObject<PaymentDto>(Json);
+            payment.CurrentState = PaymentState.PaymentDue;
+            Json = JsonConvert.SerializeObject(payment);
+        }
+
+        public void Apply(IReadModelContext context, IDomainEvent<PaymentAggregate, PaymentId, DebtCollectionEvent> domainEvent)
+        {
+            var payment = JsonConvert.DeserializeObject<PaymentDto>(Json);
+            payment.CurrentState = PaymentState.DebtCollection;
+            Json = JsonConvert.SerializeObject(payment);
+        }
+
+        public void Apply(IReadModelContext context, IDomainEvent<PaymentAggregate, PaymentId, PaymentInjunctionEvent> domainEvent)
+        {
+            var payment = JsonConvert.DeserializeObject<PaymentDto>(Json);
+            payment.CurrentState = PaymentState.PaymentInjuction;
+            Json = JsonConvert.SerializeObject(payment);
+        }
+
+        public void Apply(IReadModelContext context, IDomainEvent<PaymentAggregate, PaymentId, DistraintEvent> domainEvent)
+        {
+            var payment = JsonConvert.DeserializeObject<PaymentDto>(Json);
+            payment.CurrentState = PaymentState.Distraint;
             Json = JsonConvert.SerializeObject(payment);
         }
     }

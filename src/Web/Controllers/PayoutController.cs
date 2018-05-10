@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Payout.Core.ApplicationServices;
@@ -20,6 +21,12 @@ namespace Web.Controllers
         public async Task<IEnumerable<PayoutDto>> GetAll()
         {
             return await _payoutService.GetAll();
+        }
+
+        [HttpGet("{invoiceId}")]
+        public async Task<PayoutDto> GetPayout(Guid invoiceId)
+        {
+            return await _payoutService.GetPayout(invoiceId);
         }
 
 

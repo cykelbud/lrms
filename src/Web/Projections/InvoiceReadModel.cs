@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Assignment.Response;
 using Invoice.Core.DomainModel;
 using Invoice.Response;
 using EventFlow.Aggregates;
@@ -12,7 +13,9 @@ namespace Web.Projections
 {
     [Table("ReadModel-Invoice")]
     public class InvoiceReadModel : IReadModel,
-        IAmReadModelFor<InvoiceAggregate, InvoiceId, InvoiceCreatedEvent>
+        IAmReadModelFor<InvoiceAggregate, InvoiceId, InvoiceCreatedEvent>,
+        IAmReadModelFor<InvoiceAggregate, InvoiceId, InvoiceSentEvent>,
+        IAmReadModelFor<InvoiceAggregate, InvoiceId, InvoiceReminderSentEvent>
     {
         [MsSqlReadModelIdentityColumn]
         public string AggregateId { get; set; }
@@ -33,6 +36,17 @@ namespace Web.Projections
                 Amount = invoice.InvoiceItems.Sum(i => i.Price),
                 EmployeeId = invoice.EmployeeId,
                 InvoiceId = invoice.InvoiceId,
+                PayInAdvance = invoice.PayInAdvance,
+            };
+        }
+
+        public AssignmentInvoiceDto ToAssignmentInvoiceDto()
+        {
+            var invoice = JsonConvert.DeserializeObject<InvoiceDto>(Json);
+            return new AssignmentInvoiceDto()
+            {
+                InvoiceId = invoice.InvoiceId,
+                PayInAdvance = invoice.PayInAdvance,
             };
         }
 
@@ -50,12 +64,27 @@ namespace Web.Projections
                 InvoiceItems = e.InvoiceItems,
                 Name = e.Name,
                 StartDate = e.StartDate,
-                Vat = e.Vat
+                Vat = e.Vat,
+                PayInAdvance = e.PayInAdvance,
+                HasTaxReduction = e.HasTaxReduction
             };
 
             Json = JsonConvert.SerializeObject(invoice);
         }
 
-      
+
+        public void Apply(IReadModelContext context, IDomainEvent<InvoiceAggregate, InvoiceId, InvoiceSentEvent> domainEvent)
+        {
+            var dto = JsonConvert.DeserializeObject<InvoiceDto>(Json);
+            dto.InvoiceSentDate = domainEvent.AggregateEvent.InvoiceSentDate;
+            Json = JsonConvert.SerializeObject(dto);
+        }
+
+        public void Apply(IReadModelContext context, IDomainEvent<InvoiceAggregate, InvoiceId, InvoiceReminderSentEvent> domainEvent)
+        {
+            var dto = JsonConvert.DeserializeObject<InvoiceDto>(Json);
+            dto.ReminderSentDate = domainEvent.AggregateEvent.ReminderSentDate;
+            Json = JsonConvert.SerializeObject(dto);
+        }
     }
 }

@@ -29,4 +29,14 @@ namespace Assignment.Core.ApplicationServices
     }
 
 
+    public class GetAssignmentInvoiceQuery : IQuery<AssignmentInvoiceDto>
+    {
+        public Guid InvoiceId { get; }
+
+        public GetAssignmentInvoiceQuery(Guid invoiceId)
+        {
+            InvoiceId = invoiceId;
+        }
+    }
+
 }

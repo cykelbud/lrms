@@ -29,18 +29,27 @@ namespace Payout.Core.ApplicationServices
         {
             return await _queryProcessor.ProcessAsync(new GetAllPayoutQuery(), CancellationToken.None).ConfigureAwait(false);
         }
-        
-        public async Task PayEmployee(PayEmployeeRequest request)
+
+        public async Task<PayoutDto> GetPayout(Guid invoiceId)
         {
-            // Immediate wage payout to employee, no flow.
-            
+            return await _queryProcessor.ProcessAsync(new GetPayoutByInvoiceIdQuery(invoiceId), CancellationToken.None).ConfigureAwait(false);
+        }
+
+        public async Task PayEmployee(PayEmployeeRequest request)
+        {            
             // get amount from invoice
             var payoutInvoice = await _queryProcessor.ProcessAsync(new GetPayoutInvoiceQuery(request.InvoiceId), CancellationToken.None);
             // get bankaccount number from employee
             var payoutEmployee = await _queryProcessor.ProcessAsync(new GetPayoutEmployeeQuery(payoutInvoice.EmployeeId), CancellationToken.None);
 
-            // make payment to lets say a bank
-            var commission = payoutInvoice.Amount * 0.05m; // 5% commission, bruttolön
+            var comminsionRate = 0.05m; // 5% commission, bruttolön
+            if (payoutInvoice.PayInAdvance)
+            {
+                comminsionRate = 0.10m; // another 5 % commission for advance payment
+            }
+
+            // make payment to lets say marginalen
+            var commission = payoutInvoice.Amount * comminsionRate;
             var afterCommission = payoutInvoice.Amount - commission;
             var bruttolön = afterCommission / 1.3142m; // 31.42 arbetsgivaravgift 
             var afterTax = bruttolön * 0.70m; // 30% schablonskatt på egenanställning

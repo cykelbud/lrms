@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Assignment.Core.DomainModel;
 using Assignment.Response;
@@ -29,7 +30,7 @@ namespace Assignment.Core.ApplicationServices
             return a;
         }
 
-        public async Task SetWaitingForPayment(WaitForPaymentCommand command)
+        public async Task SetWaitingForPayment(SetWaitingForPaymentCommand command)
         {
             await _commandBus.PublishAsync(command, CancellationToken.None);
         }
@@ -37,6 +38,11 @@ namespace Assignment.Core.ApplicationServices
         public async Task CloseAssignment(CloseAssignmentCommand command)
         {
             await _commandBus.PublishAsync(command, CancellationToken.None);
+        }
+
+        public async Task<AssignmentDto> GetAssignment(Guid invoiceId)
+        {
+            return await _queryProcessor.ProcessAsync(new GetAssignmentByInvoiceIdQuery(invoiceId), CancellationToken.None);
         }
     }
 }

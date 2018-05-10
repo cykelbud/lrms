@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Payout.Requests;
 using Payout.Response;
@@ -9,5 +10,6 @@ namespace Payout.Core.ApplicationServices
     {
         Task PayEmployee(PayEmployeeRequest request);
         Task<IEnumerable<PayoutDto>> GetAll();
+        Task<PayoutDto> GetPayout(Guid invoiceId);
     }
 }

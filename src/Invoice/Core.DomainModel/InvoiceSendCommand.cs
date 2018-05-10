@@ -24,4 +24,22 @@ namespace Invoice.Core.DomainModel
             return Task.FromResult(0);
         }
     }
+
+    // 
+    public class InvoiceReminderCommand : Command<InvoiceAggregate, InvoiceId>
+    {
+        public InvoiceReminderCommand(InvoiceId aggregateId) : base(aggregateId)
+        {
+        }
+    }
+
+    public class InvoiceReminderCommandHandler : CommandHandler<InvoiceAggregate, InvoiceId, InvoiceReminderCommand>
+    {
+        public override Task ExecuteAsync(InvoiceAggregate aggregate, InvoiceReminderCommand command, CancellationToken cancellationToken)
+        {
+            aggregate.SendReminder(command);
+            return Task.FromResult(0);
+        }
+    }
+
 }

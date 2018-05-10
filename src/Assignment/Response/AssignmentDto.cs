@@ -9,6 +9,12 @@ namespace Assignment.Response
         public Status CurrentStatus { get; set; }
     }
 
+    public class AssignmentInvoiceDto
+    {
+        public Guid InvoiceId { get; set; }
+        public bool PayInAdvance { get; set; }
+    }
+
     public enum Status
     {
         Created,

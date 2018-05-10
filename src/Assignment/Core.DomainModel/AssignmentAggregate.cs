@@ -28,7 +28,7 @@ namespace Assignment.Core.DomainModel
             CurrentState = State.ProcessingInvoice;
         }
 
-        public void WaitForPayment(WaitForPaymentCommand command)
+        public void WaitForPayment(SetWaitingForPaymentCommand command)
         {
             Emit(new AssignmentInWaitingForPaymentStateEvent(command.InvoiceId));
         }

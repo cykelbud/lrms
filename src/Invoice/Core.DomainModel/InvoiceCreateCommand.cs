@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using EventFlow.Commands;
-using EventFlow.Core;
 
 namespace Invoice.Core.DomainModel
 {
@@ -10,6 +9,8 @@ namespace Invoice.Core.DomainModel
     {
         public Guid EmployeeId { get; }
         public Guid CustomerId { get; }
+        public bool PayInAdvance { get; }
+        public bool HasTaxReduction { get; } // RUT / ROT
         public DateTime StartDate { get; }
         public DateTime EndDate { get; }
         public string InvoiceDescription { get; }
@@ -17,7 +18,7 @@ namespace Invoice.Core.DomainModel
         public decimal Vat { get; }
         public InvoiceItem[] InvoiceItems { get; }
 
-        public InvoiceCreateCommand(InvoiceId aggregateId, Guid employeeId, Guid customerId, DateTime startDate, DateTime endDate, string invoiceDescription, string name, decimal vat, InvoiceItem[] invoiceItems) : base(aggregateId)
+        public InvoiceCreateCommand(InvoiceId aggregateId, Guid employeeId, Guid customerId, DateTime startDate, DateTime endDate, string invoiceDescription, string name, decimal vat, InvoiceItem[] invoiceItems, bool payInAdvance, bool hasTaxReduction) : base(aggregateId)
         {
             EmployeeId = employeeId;
             CustomerId = customerId;
@@ -27,18 +28,8 @@ namespace Invoice.Core.DomainModel
             Name = name;
             Vat = vat;
             InvoiceItems = invoiceItems;
-        }
-
-        public InvoiceCreateCommand(InvoiceId aggregateId, ISourceId sourceId, Guid employeeId, Guid customerId, DateTime startDate, DateTime endDate, string invoiceDescription, string name, decimal vat, InvoiceItem[] invoiceItems) : base(aggregateId, sourceId)
-        {
-            EmployeeId = employeeId;
-            CustomerId = customerId;
-            StartDate = startDate;
-            EndDate = endDate;
-            InvoiceDescription = invoiceDescription;
-            Name = name;
-            Vat = vat;
-            InvoiceItems = invoiceItems;
+            PayInAdvance = payInAdvance;
+            HasTaxReduction = hasTaxReduction;
         }
     }
 
@@ -46,8 +37,8 @@ namespace Invoice.Core.DomainModel
     {
         public override Task ExecuteAsync(InvoiceAggregate aggregate, InvoiceCreateCommand command, CancellationToken cancellationToken)
         {
-            aggregate.CreateCustomer(command);
-            return Task.FromResult(0);
+            aggregate.CreateInvoice(command);
+            return Task.CompletedTask;
         }
     }
 }

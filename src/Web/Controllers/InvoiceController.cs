@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Invoice.Core.ApplicationServices;
 using Invoice.Requests;
+using Invoice.Response;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers
@@ -29,6 +30,12 @@ namespace Web.Controllers
             {
                 InvoiceId = invoiceId
             });
+        }
+
+        [HttpGet("{invoiceId}")]
+        public async Task<InvoiceDto> GetInvoice(Guid invoiceId)
+        {
+            return await _invoiceService.GetInvoice(invoiceId);
         }
     }
 }

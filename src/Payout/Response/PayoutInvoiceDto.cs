@@ -7,5 +7,6 @@ namespace Payout.Response
         public Guid EmployeeId { get; set; }
         public Guid InvoiceId { get; set; }
         public decimal Amount { get; set; }
+        public bool PayInAdvance { get; set; }
     }
 }

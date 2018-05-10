@@ -14,6 +14,10 @@ namespace Invoice.Response
         public string Name { get; set; }
         public decimal Vat { get; set; }
         public InvoiceItem[] InvoiceItems { get; set; }
+        public bool PayInAdvance { get; set; }
+        public DateTime? InvoiceSentDate { get; set; }
+        public DateTime? ReminderSentDate { get; set; }
+        public bool HasTaxReduction { get; set; }
     }
 
 

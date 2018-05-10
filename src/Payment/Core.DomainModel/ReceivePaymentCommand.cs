@@ -24,7 +24,6 @@ namespace Payment.Core.DomainModel
         }
     }
 
-    //PaymentDueCommand
 
     public class PaymentDueCommand : Command<PaymentAggregate, PaymentId>
     {
@@ -45,4 +44,62 @@ namespace Payment.Core.DomainModel
         }
     }
 
+    //
+    public class DebtCollectionCommand : Command<PaymentAggregate, PaymentId>
+    {
+        public Guid InvoiceId { get; }
+
+        public DebtCollectionCommand(PaymentId aggregateId, Guid invoiceId) : base(aggregateId)
+        {
+            InvoiceId = invoiceId;
+        }
+    }
+
+    public class DebtCollectionCommandHandler : CommandHandler<PaymentAggregate, PaymentId, DebtCollectionCommand>
+    {
+        public override Task ExecuteAsync(PaymentAggregate aggregate, DebtCollectionCommand command, CancellationToken cancellationToken)
+        {
+            aggregate.DebtCollection(command);
+            return Task.CompletedTask;
+        }
+    }
+
+    // 
+    public class PaymentInjunctionCommand : Command<PaymentAggregate, PaymentId>
+    {
+        public Guid InvoiceId { get; }
+
+        public PaymentInjunctionCommand(PaymentId aggregateId, Guid invoiceId) : base(aggregateId)
+        {
+            InvoiceId = invoiceId;
+        }
+    }
+
+    public class PaymentInjunctionCommandHandler : CommandHandler<PaymentAggregate, PaymentId, PaymentInjunctionCommand>
+    {
+        public override Task ExecuteAsync(PaymentAggregate aggregate, PaymentInjunctionCommand command, CancellationToken cancellationToken)
+        {
+            aggregate.PaymentInjunction(command);
+            return Task.CompletedTask;
+        }
+    }
+    //
+    public class DistraintCommand : Command<PaymentAggregate, PaymentId>
+    {
+        public Guid InvoiceId { get; }
+
+        public DistraintCommand(PaymentId aggregateId, Guid invoiceId) : base(aggregateId)
+        {
+            InvoiceId = invoiceId;
+        }
+    }
+
+    public class DistraintCommandHandler : CommandHandler<PaymentAggregate, PaymentId, DistraintCommand>
+    {
+        public override Task ExecuteAsync(PaymentAggregate aggregate, DistraintCommand command, CancellationToken cancellationToken)
+        {
+            aggregate.Distraint(command);
+            return Task.CompletedTask;
+        }
+    }
 }

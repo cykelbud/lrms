@@ -70,4 +70,20 @@ namespace Web.QueryHandlers
         }
     }
 
+    public class GetAssignmentInvoiceQueryHandler : IQueryHandler<GetAssignmentInvoiceQuery, AssignmentInvoiceDto>
+    {
+        private readonly IMssqlReadModelStore<InvoiceReadModel> _readStore;
+
+        public GetAssignmentInvoiceQueryHandler(IMssqlReadModelStore<InvoiceReadModel> readStore)
+        {
+            _readStore = readStore;
+        }
+
+        public async Task<AssignmentInvoiceDto> ExecuteQueryAsync(GetAssignmentInvoiceQuery query, CancellationToken cancellationToken)
+        {
+            var invoiceId = InvoiceId.With(query.InvoiceId).Value;
+            var readModel = await _readStore.GetAsync(invoiceId, cancellationToken).ConfigureAwait(false);
+            return readModel.ReadModel.ToAssignmentInvoiceDto();
+        }
+    }
 }
