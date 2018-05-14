@@ -19,6 +19,7 @@ namespace Assignment.Response
     {
         Created,
         WaitingForPaymentFromCustomer,
-        Closed
+        WaitingForPaymentFromSkattverket,
+        Closed,
     }
 }

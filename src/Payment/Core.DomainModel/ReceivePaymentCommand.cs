@@ -8,10 +8,12 @@ namespace Payment.Core.DomainModel
     public class ReceivePaymentCommand : Command<PaymentAggregate, PaymentId>
     {
         public Guid InvoiceId { get; }
+        public decimal Amount { get; }
 
-        public ReceivePaymentCommand(PaymentId aggregateId, Guid invoiceId) : base(aggregateId)
+        public ReceivePaymentCommand(PaymentId aggregateId, Guid invoiceId, decimal amount) : base(aggregateId)
         {
             InvoiceId = invoiceId;
+            Amount = amount;
         }
     }
 

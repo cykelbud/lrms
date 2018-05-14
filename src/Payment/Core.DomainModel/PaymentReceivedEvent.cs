@@ -7,11 +7,13 @@ namespace Payment.Core.DomainModel
     {
         public Guid InvoiceId { get; }
         public DateTime ReceivedDate { get; }
+        public decimal Amount { get; }
 
-        public PaymentReceivedEvent(Guid invoiceId, DateTime receivedDate)
+        public PaymentReceivedEvent(Guid invoiceId, DateTime receivedDate, decimal amount)
         {
             InvoiceId = invoiceId;
             ReceivedDate = receivedDate;
+            Amount = amount;
         }
     }
 }

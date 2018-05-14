@@ -224,6 +224,59 @@ namespace IntegrationTests
             Assert.Equal(Status.WaitingForPaymentFromCustomer, assignment.CurrentStatus);
         }
 
+        [Fact]
+        public async Task HasTaxReduction()
+        {
+            var request = new CreateEmployeeRequest()
+            {
+                PersonalIdentificationNumber = "1234567890",
+                UserName = "name",
+            };
+            var employeeId = await _employeeController.CreateEmployee(request);
+
+            var customerRequest = new CreateCustomerRequest()
+            {
+                EmployeeId = employeeId,
+                PersonalIdentificationNumber = "customer ssn",
+                UserName = "customer name",
+                Address = "address"
+            };
+            var customerId = await _customerController.CreateCustomer(customerRequest);
+
+            var createInvoiceRequest = new CreateInvoiceRequest()
+            {
+                EmployeeId = employeeId,
+                CustomerId = customerId,
+                PayInAdvance = false,
+                InvoiceItems = new List<InvoiceItemDto>() { new InvoiceItemDto() { Price = 10000.0m, Description = "städning" } }.ToArray(),
+                EndDate = DateTime.Now,
+                StartDate = DateTime.Now,
+                Name = "invoiceName",
+                Vat = 25m,
+                InvoiceDescription = "invoice description",
+                HasTaxReduction = true
+            };
+            var invoiceId = await _invoiceController.CreateInvoice(createInvoiceRequest);
+            await _invoiceController.SendInvoice(invoiceId);
+
+            // payment from customer
+            await _paymentController.SimulateReceivePayment(new ReceivePaymentRequest() { InvoiceId = invoiceId, Amount = 4000m });
+            var payment = await _paymentController.GetPayment(invoiceId);
+            Assert.Equal(PaymentState.PendingPayments, payment.CurrentState);
+            var assignment = await _assignmentController.GetAssignment(invoiceId);
+            Assert.Equal(Status.WaitingForPaymentFromSkattverket, assignment.CurrentStatus);
+
+            // payment from skatteverket
+            await _paymentController.SimulateReceivePayment(new ReceivePaymentRequest() { InvoiceId = invoiceId, Amount = 1000m });
+
+            var payout = await _payoutController.GetPayout(invoiceId);
+            Assert.Equal(5060m, Math.Floor(payout.Amount));
+
+            assignment = await _assignmentController.GetAssignment(invoiceId);
+            Assert.Equal(Status.Closed, assignment.CurrentStatus);
+        }
+
+
 
         [Fact]
         public async Task CreateAssignments()

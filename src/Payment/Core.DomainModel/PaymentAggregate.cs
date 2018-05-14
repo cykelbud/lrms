@@ -33,7 +33,7 @@ namespace Payment.Core.DomainModel
 
         public void ReceivePayment(ReceivePaymentCommand command)
         {
-            Emit(new PaymentReceivedEvent(command.InvoiceId, DateTime.Now));
+            Emit(new PaymentReceivedEvent(command.InvoiceId, DateTime.Now, command.Amount));
         }
 
         public void Apply(PaymentReceivedEvent aggregateEvent)

@@ -48,6 +48,7 @@ namespace Web.Projections
             var payment = JsonConvert.DeserializeObject<PaymentDto>(Json);
             payment.PaymentReceivedDate = domainEvent.AggregateEvent.ReceivedDate;
             payment.CurrentState = PaymentState.PaymentReceived;
+            payment.Amount = domainEvent.AggregateEvent.Amount;
             Json = JsonConvert.SerializeObject(payment);
         }
 

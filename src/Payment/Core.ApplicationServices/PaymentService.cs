@@ -57,7 +57,7 @@ namespace Payment.Core.ApplicationServices
             {
                 throw new ArgumentException($"No payment found for invoice {request.InvoiceId}");
             }
-            await _commandBus.PublishAsync(new ReceivePaymentCommand(PaymentId.With(payment.PaymentId), payment.InvoiceId), CancellationToken.None);
+            await _commandBus.PublishAsync(new ReceivePaymentCommand(PaymentId.With(payment.PaymentId), payment.InvoiceId, request.Amount), CancellationToken.None);
         }
 
         public async Task SimulatePaymentDue(PaymentDueRequest request)

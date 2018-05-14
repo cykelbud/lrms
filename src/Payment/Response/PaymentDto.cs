@@ -8,6 +8,7 @@ namespace Payment.Response
         public Guid InvoiceId { get; set; }
         public DateTime? PaymentReceivedDate { get; set; }
         public PaymentState CurrentState { get; set; }
+        public decimal Amount { get; set; }
     }
 
     public enum PaymentState
@@ -18,5 +19,6 @@ namespace Payment.Response
         DebtCollection, // inkasso
         PaymentInjuction, // betalnings föreläggande
         Distraint, // utmätning
+        PendingPayments,
     }
 }
